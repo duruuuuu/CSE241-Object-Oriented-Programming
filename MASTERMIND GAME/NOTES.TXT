@@ -1,0 +1,34 @@
+/* generate a valid number:
+    - each digit ranging from 0-9
+    - left-most digit cannot be zero
+    - each digit appears ONLY ONCE
+
+    GENERATING VALID NUMBER ###
+    1. generate random number (input <-r><length of number>)
+    2. user provides a number (input <-u><secret number>)
+        *length of number starts from 0 index
+
+    GUESSING THE NUMBER
+    1. User guesses a number
+    2. Program provides two number
+        1st num: amount of correctly guessed digits in the right place
+        2nd num: amount of correctly guessed digits in the wrong place
+    3. Continue the program until the user enters the correct number
+
+    FOUND NUMBER
+    - Program informs the user that they found the number and
+      says in how many iterations the user was able to guess the number
+      (iterations start from 1)
+
+    POSSIBLE ERRORS:
+    - Missing parameter
+    - Wrong parameter ###
+    - Undefined parameter ###
+    - Invalid secret number entered by user ###
+    - Negative value ###
+    - 0 value following the -r option ###
+
+    QUESTIONS::::
+    SHOULD I DO ERROR CHECKING FOR THE GUESSING PORTION OF THE GAME?
+    I.E. SHOULD IT LET THE USER GUESS AGAIN IF THEY ENTER "1212"?
+*/
