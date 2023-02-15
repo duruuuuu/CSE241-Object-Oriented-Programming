@@ -157,7 +157,6 @@ int main()
     {
         length = stoi(num);                   // converting string of secret number length to int
         num = generate_random_number(length); // generating a random secret number
-        // cout << num << endl;
     }
 
     bool flag = true;
@@ -190,6 +189,7 @@ int main()
         cout << cExact << " " << cMisplaced << endl;
     }
 
+    // If the number of turns is exceeded, let the user know they lose
     if (count >= lives)
     {
         cout << "YOU COULD NOT FIND THE SECRET NUMBER. IT WAS " << num << endl;
