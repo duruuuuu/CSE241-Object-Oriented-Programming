@@ -1,0 +1,88 @@
+FUNCTION BASICS
+
+Random number seed
+- Pseudorandom numbers
+
+Function Declaration
+- Function prototype
+- "informational" declaration for compiler
+- tells compiler how to interpret calls
+    syntax:
+    <return_type>FnName(<formal-parameter-list>);
+    example:
+    double totalCost(int numberParameter, double priceParameter)
+- placed before any calls
+    - in declaration space of main()
+    - or above main() in global space
+
+Function Definition
+- implementation of the function
+- just like implementing main()
+    example:
+    double totalCost(int numParam, double priceParam)
+    {
+        const double TAXRATE = 0.05;
+        double subTotal;
+        subTotal = priceParam * numParam;
+        return (subTotal + subTotal*TAXRATE);
+    }
+- Notice prope indenting
+
+Funcion Definition Placement
+- Placed after function main()
+    *NOT :inside" main()
+- functions are "equals"; no functiuon is ever part of another function
+
+Function Call 
+- Just like calling predefined function 
+    bill = totalCost(number, price);
+
+- Recall: totalCost returns double value
+    Assigned to variable named "bill"
+
+
+Alternative Function Declaration
+
+
+Parameter vs Argument
+- Terms used interchangeably
+- Formal parameters/arguments
+
+Precconditions and post conditions
+- Often called inpout and output
+
+Scope rules
+- Local variables
+    - Declared inside body of the given function
+    - Available only within that function
+
+- Can have variables with the same names declared in different functions
+    - Scope is local: "That function is it's scope"
+
+- Local variables preferred
+    - Maintain individual control over data 
+    - Need to know basis 
+    - Functions should declare whatever local data needed to "do their job"
+
+Procedural Abstraction
+- Need to know what a functino does, not how it does it 
+- think 'black box'
+- Implement functions like black box
+
+copywrite 2006 pearson addison-wesley
+
+Global constants and global variables
+- used seldom
+- no control over usage
+
+Blocks
+- Declared data inside compound statements
+    - called a Block
+    - has block-scope 
+- sll function definition are a block 
+
+Nested Scope
+- same name variables declared in multoiple blocks 
+- Very legal; scope is block-scope 
+    - no ambiguity
+    - each name dstinct

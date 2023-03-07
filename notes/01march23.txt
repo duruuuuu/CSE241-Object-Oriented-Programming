@@ -1,0 +1,29 @@
+LOGICAL OPERATORS
+    - Logical AND (&&)
+    - Logical OR  (||)
+
+Data type Bool
+    - Logical operators return either true/1 or false/0
+
+Precedence of Operators
+    (refer to book)
+
+STRONG ENUM
+
+BRANCHING MECHANISMS
+    - If-else statements
+
+COMMA OPERATOR
+
+
+INTRODUCTION TO FILE INPUTS
+<fstream> library
+using namespace std;
+ifstream inputStream
+
+inputStream.open("filename.txt");
+
+Reading from a text file
+
+inputStream >> var;
+(used like cin)
