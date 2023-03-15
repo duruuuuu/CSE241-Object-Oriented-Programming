@@ -1,0 +1,20 @@
+Chapter 5 - ARRAYS
+
+Array:
+- A collection of data of same type
+- aggragate (grouping) data type
+- Used for lists of items like:
+    - test scores, temperatures, names
+- Avoids declaring multiple simple variables
+- Can manipulate "list" as one entity
+
+Declaring Arrays:
+int score[5]
+type, array name, [size]
+
+Parts of the array:
+- Index/ Subscript variables (Value in brakets)
+- Elements of the array 
+
+!! Don't use variable length arrays in homeworks unless otherwise stated
+

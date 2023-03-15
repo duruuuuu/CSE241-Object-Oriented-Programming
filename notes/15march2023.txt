@@ -1,0 +1,24 @@
+Classes-
+have member data and functions
+Classes are integral to object-oriented programming
+
+
+OBJECTS:
+	- Contains data and operations
+	- variables or class type are objects
+
+CLASS DEFINITION
+- Similar to struct
+
+class DayOfYear
+{
+public:
+	void output();
+	int month;
+	int day;
+};
+
+3 sections in class definitions:
+1. public
+2. private
+3. protected
