@@ -22,3 +22,13 @@ public:
 1. public
 2. private
 3. protected
+
+Calling member fucntions;
+
+same as struct
+
+today.month
+
+:: is a scope resolution operator
+it instucts the compiler : what class" member is from
+item before :: called type qualifier
