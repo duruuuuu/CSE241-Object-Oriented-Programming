@@ -1,31 +1,57 @@
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
-#include <string>
 
 using namespace std;
 
-void shoot(bool shooter, int shooterNum, bool &target)
+void aaron_turn(bool aaron, bool &bob, bool &charlie)
 {
-    /* Function for taking turns shooting
-       Returns 1 if the target is hit, 0 otherwise. */
+    /* Function to simulate Aaron's turn */
 
-    int hit = 0;
-
-    if (!shooter)
+    // If Aaron is already dead, return
+    if (!aaron)
         return;
 
-    if (shooterNum == 0)
-        hit = (rand() % 3);
+    // Get a random 1-in-3 shot
+    int shot = rand() % 3;
+    if (shot == 1)
+    {
+        if (charlie)
+            charlie = false;
 
-    else if (shooterNum == 1)
-        hit = (rand() % 2);
+        else if (!charlie && bob)
+            bob = false;
+    }
+}
 
-    else if (shooterNum == 2)
-        hit = 1;
+void bob_turn(bool bob, bool &aaron, bool &charlie)
+{
+    /* Function to simulate Bob's turn. Works the same was as Aaron's turn */
+    if (!bob)
+        return;
 
-    if (hit)
-        target = false;
+    int shot = rand() % 2;
+    if (shot == 1)
+    {
+        if (charlie)
+            charlie = false;
+
+        else if (!charlie && aaron)
+            aaron = false;
+    }
+}
+
+void charlie_turn(bool charlie, bool &aaron, bool &bob)
+{
+    /* Function to simulate Charlie's turn. Works the same way as Aaron and Bob's turns */
+    if (!charlie)
+        return;
+
+    if (bob)
+        bob = false;
+
+    else if (!bob && aaron)
+        aaron = false;
 }
 
 int main()
@@ -33,80 +59,35 @@ int main()
     srand(time(NULL));
 
     const int MAX_DUELS = 10000; // Number of duel simulations
-
-    const int AARON = 0;
-    const int BOB = 1;
-    const int CHARLIE = 2;
-
+    bool aaronLife, bobLife, charlieLife;
     int aaronWins = 0,
         bobWins = 0,
         charlieWins = 0;
 
+    // Outer loop for the number of simulations and keeps tracks of each players wins
     for (int i = 0; i < MAX_DUELS; i++)
     {
-        bool aaronLife = true,
-             bobLife = true,
-             charlieLife = true;
+        aaronLife = true;
+        bobLife = true;
+        charlieLife = true;
 
-        while (!((charlieLife == false && bobLife == false) || (charlieLife == false && aaronLife == false) || (bobLife == false && aaronLife == false)))
+        // Inner loop to do the simulations until someone is the winner
+        while (!(((charlieLife == false) && (bobLife == false)) || ((charlieLife == false) && (aaronLife == false)) || ((bobLife == false) && (aaronLife == false))))
         {
-            if (aaronLife)
-            {
-                // Aarons turn to shoot
-                if (charlieLife)
-                    shoot(aaronLife, 0, charlieLife);
-
-                else if (charlieLife == false && bobLife == true)
-                    shoot(aaronLife, 0, bobLife);
-
-                else if (!charlieLife && !bobLife)
-                    break;
-            }
-
-            if (bobLife)
-            {
-                // Bob's turn to shoot
-                if (charlieLife == true)
-                    shoot(bobLife, 1, charlieLife);
-
-                else if (charlieLife == false && aaronLife == true)
-                    shoot(bobLife, 1, aaronLife);
-
-                else if (!charlieLife && !aaronLife)
-                    break;
-            }
-
-            if (charlieLife)
-            {
-                // Charlies's turn to shoot
-                if (bobLife == true)
-                    shoot(charlieLife, 2, bobLife);
-
-                else if (bobLife == false && aaronLife == true)
-                    shoot(charlieLife, 2, aaronLife);
-
-                else if (!bobLife && !aaronLife)
-                    break;
-            }
-
-            if (bobLife == false && charlieLife == false)
-            {
-                aaronWins++;
-                break;
-            }
-
-            else if (aaronLife == false && bobLife == false)
-            {
-                charlieWins++;
-                break;
-            }
-
-            else if (aaronLife == false && charlieLife == false)
-            {
-                bobWins++;
-                break;
-            }
+            aaron_turn(aaronLife, bobLife, charlieLife);
+            bob_turn(bobLife, aaronLife, charlieLife);
+            charlie_turn(charlieLife, aaronLife, bobLife);
         }
+
+        // Incrementing the win count of the winner
+        if (aaronLife && !bobLife && !charlieLife)
+            aaronWins++;
+
+        else if (bobLife && !aaronLife && !charlieLife)
+            bobWins++;
+
+        if (charlieLife && !bobLife && !aaronLife)
+            charlieWins++;
     }
     cout << "AARON WINS: " << aaronWins << "/" << MAX_DUELS << " duels. " << (static_cast<double>(aaronWins) / MAX_DUELS) * 100 << "%" << endl;
     cout << "BOB WINS: " << bobWins << "/" << MAX_DUELS << " duels. " << (static_cast<double>(bobWins) / MAX_DUELS) * 100 << "%" << endl;
