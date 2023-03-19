@@ -27,8 +27,4 @@
     - Invalid secret number entered by user ###
     - Negative value ###
     - 0 value following the -r option ###
-
-    QUESTIONS::::
-    SHOULD I DO ERROR CHECKING FOR THE GUESSING PORTION OF THE GAME?
-    I.E. SHOULD IT LET THE USER GUESS AGAIN IF THEY ENTER "1212"?
 */
