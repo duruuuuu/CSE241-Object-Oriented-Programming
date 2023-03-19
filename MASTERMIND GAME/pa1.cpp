@@ -98,7 +98,6 @@ int find_misplaced_digits(int *secretNum, int *guess)
 
 void check_user_input(char *inputArr)
 { /* Function to error check the user input at the start of the game */
-
     // Checking if the user entered a valid generation type (r or u)
     if (inputArr[1] != 'r' && inputArr[1] != 'u')
     {
@@ -109,17 +108,20 @@ void check_user_input(char *inputArr)
     // If the random number generator is followed by a 0 or negative number
     if (inputArr[1] == 'r')
     {
-        if (inputArr[3] < '1')
+        char enteredDigit = inputArr[2];            // assigning single character to entered no of digits
+        int entered_digit_num = enteredDigit - '0'; // converting the character to an integer
+        if (entered_digit_num < 1 || entered_digit_num > 9)
         {
+            // If the entered value is not valid
             cout << "E0" << endl;
             exit(1);
         }
     }
 
     // If the user generated number has digits which are not unique
-    if (inputArr[1] == 'u')
+    else if (inputArr[1] == 'u')
     {
-        for (int i = 3; inputArr[i] != '\0'; i++)
+        for (int i = 2; inputArr[i] != '\0'; i++)
         {
             for (int j = i + 1; inputArr[j] != '\0'; j++)
             {
@@ -173,11 +175,11 @@ void convert_input(char *inputArr, int *numArr)
 
     // i starts from 3 because the secret number begins on the 3rd index of the character array
     int i;
-    for (i = 3; inputArr[i] != '\0'; i++)
-        numArr[i - 3] = (inputArr[i] - '0');
+    for (i = 2; inputArr[i] != '\0'; i++)
+        numArr[i - 2] = (inputArr[i] - '0');
 
     // Filling the rest of the integer array with a sentinal value to mark the end of the secret number
-    for (i -= 3; i < MAX_SIZE; i++)
+    for (i -= 2; i < MAX_SIZE; i++)
         numArr[i] = SENT_VAL;
 }
 
@@ -273,17 +275,28 @@ void game_play(char *inputArr)
 
     /* Initializing secret number array for ranom generated option */
     else if (inputArr[1] == 'r')
-        generate_random_number(secretNumber, (inputArr[3] - '0'));
+        generate_random_number(secretNumber, (inputArr[2] - '0'));
 
     /* Starts the loop for guessing the number */
     guess_number(secretNumber, inputArr[1]);
 }
 
-int main()
+int main(int argc, char **argv)
 {
     /* Getting the input from the user */
     char userInput[MAX_SIZE];
-    cin.getline(userInput, MAX_SIZE);
+    clean_array(userInput); // Cleaning array to avoid any problems with the buffer of the array
+
+    // Transferring the initial command line input to a local array
+    int k = 0;
+    for (int i = 1; i < argc; i++)
+    {
+        for (int j = 0; argv[i][j] != '\0'; j++)
+        {
+            userInput[k] = argv[i][j];
+            k++;
+        }
+    }
 
     // Starting the game
     game_play(userInput);
