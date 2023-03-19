@@ -10,27 +10,27 @@
 
 using namespace std;
 
-const int MAX_SIZE = 12;
-const int SENT_VAL = -999;
-const int MAX_TURNS = 100;
+const int MAX_SIZE = 12;   // Constant for the maximum size of arrays
+const int SENT_VAL = -999; // Sentinal value to mark the end of the number in the integer arrays
+const int MAX_TURNS = 100; // Maximum number of iterations for guessing the secret number
 
 void clean_array(char *arr)
-{
-    /* Function to clean the character array to make sure there are no complications in a loop/buffer*/
+{ /* Function to clean the character array to make sure there are no complications in a loop/buffer*/
+
     for (int i = 0; i < MAX_SIZE; i++)
         arr[i] = '\0';
 }
 
 void clean_array(int *arr)
-{
-    /* Function to clean the integer array to make sure there are no complications in a loop/buffer*/
+{ /* Function to clean the integer array to make sure there are no complications in a loop/buffer*/
+
     for (int i = 0; i < MAX_SIZE; i++)
         arr[i] = SENT_VAL;
 }
 
 void generate_random_number(int *nums, int length)
-{
-    /* function to generate a random number of length given by the user */
+{ /* function to generate a random number of length given by the user */
+
     srand(time(0));
 
     for (int i = 0; i < length; i++)
@@ -62,11 +62,12 @@ void generate_random_number(int *nums, int length)
 }
 
 int find_exact_digits(int *secretNum, int *guess)
-{
-    /* Funtion to find the exact correct spot in the guessed number of the user */
+{ /* Funtion to find the exact correct spot in the guessed number of the user */
+
     int count = 0;
+
     for (int i = 0; guess[i] != SENT_VAL; i++)
-    {
+    { // If the number in the same index is equal, increment the count
         if (secretNum[i] == guess[i])
             count++;
         else
@@ -77,13 +78,13 @@ int find_exact_digits(int *secretNum, int *guess)
 }
 
 int find_misplaced_digits(int *secretNum, int *guess)
-{
-    /* Function to find the misplaced digits in the guess of the user */
+{ /* Function to find the misplaced digits in the guess of the user */
+
     int count = 0;
     for (int i = 0; secretNum[i] != SENT_VAL; i++)
     {
         for (int j = 0; guess[j] != SENT_VAL; j++)
-        {
+        { // If the number in diffferent indices are equal, increment the count
             if ((i != j) && (secretNum[i] == guess[j]))
                 count++;
 
@@ -96,9 +97,9 @@ int find_misplaced_digits(int *secretNum, int *guess)
 }
 
 void check_user_input(char *inputArr)
-{
-    /* Function to error check the user input at the start of the game */
+{ /* Function to error check the user input at the start of the game */
 
+    // Checking if the user entered a valid generation type (r or u)
     if (inputArr[1] != 'r' && inputArr[1] != 'u')
     {
         cout << "E0" << endl;
@@ -109,8 +110,10 @@ void check_user_input(char *inputArr)
     if (inputArr[1] == 'r')
     {
         if (inputArr[3] < '1')
+        {
             cout << "E0" << endl;
-        exit(1);
+            exit(1);
+        }
     }
 
     // If the user generated number has digits which are not unique
@@ -131,9 +134,9 @@ void check_user_input(char *inputArr)
 }
 
 void check_user_input(int *inputArr, int *secretNumber)
-{
-    /* Function to check the user input while guessing the secret number*/
+{ /* Function to check the user input while guessing the secret number*/
 
+    // keeping track of the sizes of the secret number and guessed number
     int secretNumberSize = 0;
     int inputNumberSize = 0;
 
@@ -147,7 +150,7 @@ void check_user_input(int *inputArr, int *secretNumber)
             inputNumberSize++;
     }
 
-    /* Checks if the input is a valid character */
+    /* Checks if the input is a valid character (if it is between 0-9 and making sure it is a digit)*/
     if (inputArr[0] > 9 || inputArr[0] < 0)
     {
         cout << "inputArr: " << inputArr[0] << endl;
@@ -155,7 +158,8 @@ void check_user_input(int *inputArr, int *secretNumber)
         exit(1);
     }
 
-    /* Checks if the input has a valid number of digits */
+    /* Checks if the input has a valid number of digits
+       (making sure the guessed number has an equal # of digits as the secret number )*/
     else if (secretNumberSize != inputNumberSize)
     {
         cout << "E1" << endl;
@@ -164,45 +168,46 @@ void check_user_input(int *inputArr, int *secretNumber)
 }
 
 void convert_input(char *inputArr, int *numArr)
-{
-    /* Fucntion to convert the input numbers from type char to type int */
+{ /* Function to convert the input numbers from type char to type int */
     /* THIS FUNCTION IS USED FOR THE INITIAL -U CALL */
 
+    // i starts from 3 because the secret number begins on the 3rd index of the character array
     int i;
     for (i = 3; inputArr[i] != '\0'; i++)
         numArr[i - 3] = (inputArr[i] - '0');
 
+    // Filling the rest of the integer array with a sentinal value to mark the end of the secret number
     for (i -= 3; i < MAX_SIZE; i++)
         numArr[i] = SENT_VAL;
 }
 
 void convert_input(int *numArr, char *inputArr)
-{
-    /* Function to convert the input of the guessed number */
+{ /* Function to convert the input of the guessed number */
     /* THIS FUNCTION IS USED TO CONVERT THE NUMBER ENTERED WHILE GUESSING */
+
     int i;
     for (i = 0; inputArr[i] != '\0'; i++)
         numArr[i] = (inputArr[i] - '0');
 
+    // Filling the rest of the array with a sentinal value to mark the end of the array
     for (; i < MAX_SIZE; i++)
         numArr[i] = SENT_VAL;
 }
 
 int get_secret_number_size(int *secretNumber)
-{
-    /* Function to get the number of digits in the secret number */
+{ /* Function to get the number of digits in the secret number */
     int i;
     for (i = 0; secretNumber[i] != SENT_VAL; i++)
     {
-        ;
+        ; // Just incrementingg i until the loop hits the sentinal value
     }
 
     return i;
 }
 
 void guess_number(int *secretNumber, char generationType)
-{
-    /* Function to implement the loop for guessing the number */
+{ /* Function to implement the loop for guessing the number */
+
     // Arrays to hold the input guess numbers
     char inputCh[MAX_SIZE];
     int inputN[MAX_SIZE];
@@ -211,16 +216,11 @@ void guess_number(int *secretNumber, char generationType)
     clean_array(inputCh);
     clean_array(inputN);
 
-    int iteration = 0;
-    int secretNumberSize = get_secret_number_size(secretNumber);
-
-    /* Prints the secret number for testing purposes */
-    for (int j = 0; secretNumber[j] != SENT_VAL; j++)
-        cout << secretNumber[j];
-    cout << endl;
+    int iteration = 0;                                           // keeps track of the number of iterations for guessing
+    int secretNumberSize = get_secret_number_size(secretNumber); // Getting the size of the secret number
 
     /* User starts guessing the number */
-    while (iteration < 100)
+    while (iteration < MAX_TURNS)
     {
         char inputCh[MAX_SIZE];
 
@@ -242,6 +242,7 @@ void guess_number(int *secretNumber, char generationType)
         /* If the secret number is found, exit the game. */
         if (exactDigits == secretNumberSize)
         {
+            // If the number of exact digits found is the same as the number of digits in the secret nubmer
             cout << "FOUND " << iteration << endl;
             exit(1);
         }
@@ -253,6 +254,10 @@ void guess_number(int *secretNumber, char generationType)
         clean_array(inputCh);
         clean_array(inputN);
     }
+
+    /* If the user loses, display the correct secret number */
+    if (iteration == MAX_TURNS)
+        cout << "FAILED" << endl;
 }
 
 void game_play(char *inputArr)
@@ -260,7 +265,7 @@ void game_play(char *inputArr)
     // Checking user input for errors
     check_user_input(inputArr);
 
-    int secretNumber[MAX_SIZE];
+    int secretNumber[MAX_SIZE]; // array to hold the secret number
 
     /* Initializing secret number array for user-generated option */
     if (inputArr[1] == 'u')
@@ -280,6 +285,7 @@ int main()
     char userInput[MAX_SIZE];
     cin.getline(userInput, MAX_SIZE);
 
+    // Starting the game
     game_play(userInput);
 
     return 0;
