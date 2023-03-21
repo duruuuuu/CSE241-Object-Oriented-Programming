@@ -12,7 +12,7 @@ public:
     void set_denominator(int n) { denominator = n; }
 
     // Getter functions
-    double get_value() { return (numerator * 1.0) / denominator; }
+    double get_value() const { return (numerator * 1.0) / denominator; }
     void print_simplified_fraction()
     {
         /* Getting the greatest common factor */
