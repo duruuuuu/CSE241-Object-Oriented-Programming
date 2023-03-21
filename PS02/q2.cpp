@@ -6,6 +6,12 @@ using namespace std;
 
 const int MAX_DIGITS = 20;
 
+void clean_array(int *arr)
+{
+    for (int i = 0; i < MAX_DIGITS; i++)
+        arr[i] = 0;
+}
+
 void flip_digits(int *arr, int *size)
 {
     /* Function to flip the digits in the array */
@@ -20,8 +26,9 @@ void flip_digits(int *arr, int *size)
 void input(int *numArr, int *size)
 {
     /*  Function to display prompts and get input from user */
+    fflush(stdin);
     int digitCount = 0;
-    char ch;
+    char ch = '\0';
     int i = 0;
 
     // Getting the first number
@@ -68,8 +75,9 @@ int add(int *arr1, int *arr2, int *size, int *sum)
         // Checking for integer overflow
         if (sumDigitCount >= MAX_DIGITS)
         {
-            cout << "Integer overflow has occured. Program terminating..." << endl;
-            exit(1);
+            cout << "Integer overflow has occured. Setting sum to 0..." << endl;
+            // exit(1);
+            return -1;
         }
         // Checking if one number is greater than the other
         if (j > size[1] - 1)
@@ -101,6 +109,13 @@ void print_sum(int *sumArr, int *size, int *num1, int *num2)
     /* Function to print the addition operation and the sum */
     int longestNumber = 0;
     int sizeDiff;
+
+    if (size[2] == -1)
+    {
+        cout << endl;
+        return;
+    }
+
     if (size[0] >= size[1])
         longestNumber = 0;
 
@@ -139,11 +154,13 @@ void print_sum(int *sumArr, int *size, int *num1, int *num2)
     cout << endl;
 }
 
-int main()
+void do_addition()
 {
-    int num1[MAX_DIGITS], num2[MAX_DIGITS];
-    int sizes[3];
-    int sumArray[MAX_DIGITS] = {0};
+    /* Function to do the actual addition program */
+
+    int num1[MAX_DIGITS], num2[MAX_DIGITS]; // Arrays to hold the digits of each number
+    int sizes[3];                           // Array to hold the sizes of all the arrays (num1, num2, sumArray)
+    int sumArray[MAX_DIGITS] = {0};         // Array to hold the sum's digits
     int sumSize = 0;
 
     // Getting user inputs
@@ -155,6 +172,25 @@ int main()
 
     // Printing the sum
     print_sum(sumArray, sizes, num1, num2);
+}
+
+int main()
+{
+    /* Loop to do the addition */
+    int go = 1;
+    while (go)
+    {
+        cout << "=========================================================================" << endl;
+        do_addition(); // Addition function
+
+        cout << "Would you like to go again? Enter 1 for yes, 0 to terminate the program." << endl;
+        cin >> go;
+
+        // Flushing the input stream to avoid problems in the next iteration
+        cin.ignore();
+        fflush(stdin);
+        cout << endl;
+    }
 
     return 0;
 }
