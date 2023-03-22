@@ -59,6 +59,11 @@ void generate_random_number(int *nums, int length)
 
     for (int i = length; i < MAX_SIZE; i++)
         nums[i] = SENT_VAL;
+
+    if (nums[0] = 0)
+    {
+    }
+    // swap first and second digits
 }
 
 int find_exact_digits(int *secretNum, int *guess)
