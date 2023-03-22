@@ -1,0 +1,46 @@
+more on classes and structs
+
+ENCAPSULATION
+	- Means "bringing together as one:
+
+	- Declare a class -> get an object
+
+	- Object is "encapsulation" of:
+		- Data Values
+		- Operations on the data
+
+Principles of OOP
+- Information Hiding
+	- Details of how operations work not known to "user" of class
+
+- Data Abstraction
+	- Details of how data is manipulated within ADT/classes not known to user
+
+- Encapsulation
+	- Bringing together data and operations, but keep "details" hidden 
+
+Public and Private Data MEmbers
+- Data in classes almost always designated private in definiton!
+
+- Public items (usually member functions) are all "user-accessible"
+
+Accessor and Mutator Functions
+- Allows objects to manipulate private entities
+
+Separate Interface and Implementation
+
+
+Thinking Objects
+- Focus for programming changes
+	Before -> algorithms center stage
+	OOP    -> data is focus
+
+- Algo still exists
+	- Theys simply focus on their d ata
+	- Are "made" to "fit" the data
+
+
+CONSTRUCTORS AND OTHER TOOLS
+- Initialization of objects
+- Automatically called when the member is decalred
+- 

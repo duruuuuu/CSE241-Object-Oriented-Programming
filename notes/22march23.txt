@@ -1,0 +1,94 @@
+CONSTRUCTORS
+- nitialization of objects
+- Initialize some or all member variables
+- Automatically called when object declared
+- Key principle of OOP
+- Cannot return a value (even void)
+
+
+INLINE FUNCTIONS
+- For non-member functions:
+	- use keyword inline in function declaration and heading
+- For class member functions:
+	- Place implementation (code) for function IN
+	  class definition ->automatically inline
+- Use for very short functions only
+- Code actually inserted in place of call
+	- Eliminates overhead
+	- More efficient but only when short
+
+INLINE MEMBER FUNCTIONS
+- Member function definitions
+	- Typically defined separately, in diferent file
+	- Can be defined IN class definition
+		- Makes function "in-line"
+
+
+MEMBER INITIALIZERS
+- C++11 supports member initialization
+	- This feature allows you to set default values for member values
+(example)
+class Coordinate
+{
+public:
+	Coordinate();
+
+private:
+	int x=1;
+	int x=2;
+};
+Coordinate::Coordinate(){}
+
+Coordinate c1; //Initializes c1.x to 1 and c1.y to 2 
+
+STATIC MEMBERS
+- Static member variables
+	- All objects of class "share" one copy
+	- one object hcanges it -> all see change
+- Useful for "tracking"
+
+
+STATIC FUNCTIONS
+- Member functions can be static
+	- if no access to object data needed
+	- and srill "must" be member of the class
+	- Make ti a static function
+- Can then be called outside hte classs
+	- FDrom non-class objects:
+		- Server::GetTurn();
+	- As well as via class objects
+		- Standard method: MyObject.GetTurn();
+- Can only use static data, functions!
+
+
+VECTORS
+- Arrays that shrink and grow
+
+VECTOR BASICS
+_ Similar ato array:
+	- Has base type
+	- Stores collection of base type values
+
+- Declared differently
+	- Syntax: vector<Base_type>
+	- Any type can be "plugged in" to base_type
+	- Produces "new" class for vectors with that type
+- Example declaration:
+	vector<int>v;
+
+VECTOR USE
+- Indexed like arrays for acces
+- But adds elements using class member function push_back();
+- Member function size()
+	- Returns current number of elements
+
+VECTOR EFFICIENCY
+- MEmber function capacity()
+	- Returns memory currently allocated
+	- Not same as size()
+	- capacity typically > size
+		- automatically increased as needed
+- If efficiency critical:
+	- Can set behaviours manuajlly
+		- v.reserve(32 // Sets capacitry to 32
+		- v.reserve(v.size()+10) // Sets capacity to 10 more  than size
