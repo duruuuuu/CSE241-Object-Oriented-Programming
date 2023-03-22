@@ -23,7 +23,7 @@ void flip_digits(int *arr, int *size)
     }
 }
 
-void input(int *numArr, int *size)
+bool input(int *numArr, int *size)
 {
     /*  Function to display prompts and get input from user */
     fflush(stdin);
@@ -38,8 +38,8 @@ void input(int *numArr, int *size)
     {
         if (!isdigit(ch))
         {
-            cout << "non-digit entered. Terminating program..." << endl;
-            exit(1);
+            cout << "non-digit entered. Please enter a valid number..." << endl;
+            return false;
         }
         numArr[i] = int(ch) - int('0');
         digitCount++;
@@ -48,12 +48,13 @@ void input(int *numArr, int *size)
     }
     if (digitCount > MAX_DIGITS)
     {
-        cout << "Input number is too large. Terminating program...";
-        exit(1);
+        cout << "Input number is too large. Please enter a number with 20 digits or less.";
+        return false;
     }
     *size = digitCount;
 
     flip_digits(numArr, size);
+    return true;
 }
 
 int add(int *arr1, int *arr2, int *size, int *sum)
@@ -164,8 +165,13 @@ void do_addition()
     int sumSize = 0;
 
     // Getting user inputs
-    input(num1, &sizes[0]);
-    input(num2, &sizes[1]);
+    bool validInput1 = input(num1, &sizes[0]);
+    if (validInput1 == false)
+        return;
+
+    bool validInput2 = input(num2, &sizes[1]);
+    if (validInput2 == false)
+        return;
 
     // Adding the numbers and getting the length of the sum
     sizes[2] = add(num1, num2, sizes, sumArray);
