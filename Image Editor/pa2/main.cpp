@@ -7,43 +7,47 @@ using namespace std;
 
 /********* PIXEL CLASS *********/
 class Pixel
-{ /* Class to store pixel values */
+{ /* Class to store the coilor values of each pixel in the image  */
 private:
-    int r, g, b;
+    int r, g, b; // integer values for red, green, and blue pixels
 
 public:
     /* Constructors */
     Pixel();                             // Default constructor
     Pixel(int red, int green, int blue); // Constructor which initializes the pixel colors
+
+    /* Member Functions */
+    // Setter functions
+    void set_pixel_values(int red, int green, int blue);
+
+    // Getter functions
     int get_red_pixel();
     int get_green_pixel();
     int get_blue_pixel();
-
-    /* Member Functions */
-    void set_pixel_values(int red, int green, int blue);
 };
 
-Pixel::Pixel()
-{ // Default constructor
+Pixel::Pixel() // Default constructor
+{
     r = 0;
     g = 0;
     b = 0;
 }
 
-Pixel::Pixel(int red, int green, int blue)
-{ // Constructor which initializes the pixel colors
+Pixel::Pixel(int red, int green, int blue) // Constructor which initializes the pixel colors
+{
     r = red;
     g = green;
     b = blue;
 }
 
+// Getter functions to get the individual pixel values
 int Pixel::get_red_pixel() { return r; }
 
 int Pixel::get_green_pixel() { return g; }
 
 int Pixel::get_blue_pixel() { return b; }
 
-void Pixel::set_pixel_values(int red, int green, int blue)
+void Pixel::set_pixel_values(int red, int green, int blue) // Function to set the pixel values
 {
     r = red;
     g = green;
@@ -52,31 +56,32 @@ void Pixel::set_pixel_values(int red, int green, int blue)
 
 /********* IMAGE CLASS *********/
 class Image
-{ /* Class to store image values */
+{ /* Class to store the image and its file information */
 private:
-    string filename;
+    string filename;            // stores the name of the file
+    static string tempFileName; // stores the name fo the temporary file ccreated for error checking and modification
 
     // Colour channel coefficients
     float c_r;
     float c_g;
     float c_b;
 
-    string magicNumber;
+    // FILE HEADER INFORMATION
+    string magicNumber; // Magic number aka image type
+    int height;         // Row count
+    int width;          // Coloumn count
+    int maxColorVal;    // Max color value of the image pixels
 
-    // max colour value stated in the image file
-    int maxColorVal;
-
-    // Number of rows and coloumns of pixels in the image
-    int height; // Row count
-    int width;  // Coloumn count
-
-    // vector to hold the pixel values of the image
+    // vector of type Pixel to hold the pixel values of the image
     vector<vector<Pixel>> pixelVector;
 
-    void store_pixel_values(ifstream &imageFile);
-    void set_image_filename(string s);
-
-    int calculate_grayscale_values(int i, int j);
+    /* PRIVATE MEMBER FUNCTIONS */
+    void store_pixel_values();                                         // For copying the pixel values from the file to the vector
+    void set_image_filename(string s);                                 // Setter function to set the image's filename
+    int calculate_grayscale_values(int i, int j);                      // For calculating the greyscale values according to the coefficient channels
+    void set_coefficient_channels(float red, float green, float blue); // Setter function for the coefficient values
+    void delete_comments_from_file(ifstream &imageFile);               // Function to delete any comments from the file
+    void check_fileheader_errors(ifstream &tempFileIn);                // Function for chekcing the file for errors
 
 public:
     // Constructors
@@ -85,68 +90,92 @@ public:
     Image(int row, int col, int maxColour); // Initializes height, width, and max color value
 
     // Member Functions
-    void set_coefficient_channels(float red, float green, float blue);
     string get_filename();
     int open_image_file();
+    void convert_to_greyscale(float r, float b, float c);
     void save_image();
-    void convert_to_greyscale();
 };
 
-Image::Image(){};
+string Image::tempFileName = "temp.ppm";
 
-Image::Image(string s) { filename = s; }
+Image::Image()
+{ // Default constructor sets filename to null for error checking when trying to modify a file
+    filename = "\0";
+}
+
+Image::Image(string s)
+{ // Constructor which initializes filenames
+
+    filename = s;
+}
 
 Image::Image(int row, int col, int maxColour)
-{
+{ // Constructor which initializes header information
     height = row;
     width = col;
     maxColorVal = maxColour;
 }
 
-void Image::set_image_filename(string s) { filename = s; }
+void Image::set_image_filename(string s) { filename = s; } // Setter function for filename
 
-string Image::get_filename() { return filename; }
+string Image::get_filename() { return filename; } // Getter function for filiename
 
 void Image::set_coefficient_channels(float red, float green, float blue)
+// setter funcion for coefficient values
 {
     c_r = red;
     c_g = green;
     c_b = blue;
 }
 
-void Image::store_pixel_values(ifstream &imageFile)
-{
-    /* Check for comments in the file and delete them if any */
-    string tempFileName = "temp.ppm";
-    ofstream tempFileOut(tempFileName);
+void Image::delete_comments_from_file(ifstream &imageFile)
+{ /*
+    Function takes in a new temporary file and stores the original file information while
+    deleting any comments to be able to store the image information wihtout any errors
+  */
 
-    // Read the file line by lin
+    ofstream tempFileOut(tempFileName); // opening file as an output stream
+
+    // Read the file line by line
     string line;
     while (getline(imageFile, line))
     {
-        // Check if the line starts with a # symbol
+        // Do not store the line if it starts with a # symbol (comment line)
         if (line[0] != '#')
             tempFileOut << line << endl;
     }
 
     // Opening the temporary file
     tempFileOut.close();
+}
 
-    ifstream tempFileIn(tempFileName);
-    /* Read the PPM header and delete any comments, if there are any*/
+void Image::check_fileheader_errors(ifstream &tempFileIn)
+{
+    // ifstream tempFileIn(tempFileName);
+
+    /* Read the PPM header and store the values */
     tempFileIn >> magicNumber >> height >> width >> maxColorVal;
 
-    /* If the magic numnber is wrong */
+    /* If the magic number is wrong */
     if (magicNumber != "P3")
     {
-        cerr << "Invalid image format" << endl;
+        cerr << "Invalid image format" << endl; // Display error message
+        remove(tempFileName.c_str());           // Delete the temporary file
         return;
     }
+}
 
+void Image::store_pixel_values()
+{ /* Function to copy the pixel values from the file and store them in the image object's vector*/
+
+    ifstream tempFileIn(tempFileName); // opening temporary file as an niput stream
+
+    check_fileheader_errors(tempFileIn); // Making sure there are no errors or invalid data in the header of the file
+
+    /* Copying the pixel values to the object's vector */
     for (int i = 0; i < height; i++)
     {
-        // Creating a temporary vector for the 2nd dimension of the array
-        vector<Pixel> innerVector;
+        vector<Pixel> innerVector; // Creating a temporary vector for the 2nd dimension of the array
         innerVector.resize(width); // Re-sizing the vector according to the width count
 
         for (int j = 0; j < width; j++)
@@ -157,11 +186,12 @@ void Image::store_pixel_values(ifstream &imageFile)
             Pixel temp(r, g, b);
             innerVector[j] = temp;
         }
+
         // Pushing back the inner vector into the outer vector
         pixelVector.push_back(innerVector);
     }
 
-    // Deleting temp file
+    // Deleting temporary file
     remove(tempFileName.c_str());
 }
 
@@ -169,7 +199,8 @@ int Image::open_image_file()
 {
     string s;
     cin >> s;
-    set_image_filename(s);
+    filename = s;
+    // set_image_filename(s);
 
     ifstream imageFile(filename);
     if (!imageFile.is_open())
@@ -178,7 +209,8 @@ int Image::open_image_file()
         return 0;
     }
 
-    store_pixel_values(imageFile);
+    delete_comments_from_file(imageFile); // Checking the file for comments and deleting them
+    store_pixel_values();                 // Copy the pixel values to local object vector
 
     imageFile.close();
     return 0;
@@ -189,8 +221,9 @@ int Image::calculate_grayscale_values(int i, int j)
     return ((int)(pixelVector.at(i).at(j).get_red_pixel() * c_r) + (int)(pixelVector.at(i).at(j).get_green_pixel() * c_g) + (int)(pixelVector.at(i).at(j).get_blue_pixel() * c_b));
 }
 
-void Image::convert_to_greyscale()
+void Image::convert_to_greyscale(float r, float g, float b)
 {
+    set_coefficient_channels(r, g, b);
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
@@ -206,13 +239,10 @@ void Image::save_image()
     string s;
     cin >> s;
 
-    /* Checking if the filename entered is valid */
+    /* If the entered filename doesnt have the file extension, add the extension */
     int len = s.length();
     if (len < 4 || (s.substr(len - 4, 4) != ".ppm"))
-    {
-        cerr << "Please enter a valid ppm filename. (make sure the extension of the file is correct)" << endl;
-        return;
-    }
+        s += ".ppm";
 
     ofstream newImageFile(s);
 
@@ -241,144 +271,187 @@ private:
     Image image;
 
     /* Member Functions */
-    int save_image_menu();
-    int scripts_menu();
-    int open_image_menu();
-    int convert_to_grayscale_menu();
-    int display_menu();
+    void display_save_image_menu();
+    void display_scripts_menu();
+    void display_open_image_menu();
+    void display_convert_to_grayscale_menu();
+    void display_main_menu();
 
 public:
     void run();
 };
 
-int ImageEditor::convert_to_grayscale_menu()
-{ /* Functio to display grayscale menu */
-    int input = 1;
-    while (input)
+void ImageEditor::display_convert_to_grayscale_menu()
+{ /* Function to display grayscale menu */
+
+    char choice = -1;
+    while (choice)
     {
         cout << "============================================" << endl;
         cout << "CONVERT TO GRAYSCALE MENU" << endl;
         cout << "0 - UP" << endl;
         cout << "1 - Enter Coefficients For RED GREEN and BLUE Channels." << endl;
+        cin >> choice;
 
-        cin >> input;
-
-        if (input == 1)
+        switch (choice)
         {
-            float red = 0.0, blue = 0.0, green = 0.0;
-            cin >> red >> green >> blue;
+        case '0':
+            return;
 
-            image.set_coefficient_channels(red, green, blue);
+        case '1':
+            /* TODO: Error checking for coeficient channels? */
+            float r, g, b;
+            cin >> r >> g >> b;
+            image.convert_to_greyscale(r, g, b);
+            break;
 
-            image.convert_to_greyscale();
+        default:
+            cerr << "Invalid input. Please try again." << endl;
+            break;
         }
     }
-    return 0;
 }
 
-int ImageEditor::open_image_menu()
+void ImageEditor::display_open_image_menu()
 { /* Function to diplay open image menu */
-    cout << "============================================" << endl;
-    cout << "OPEN AN IMAGE MENU: " << endl;
-    cout << "0 - Up" << endl;
-    cout << "1 - Enter the Name of the Image" << endl;
 
-    int n;
-    cin >> n;
-    return n;
+    string filename;
+    char choice = '1';
+    while (choice)
+    {
+        cout << "============================================" << endl;
+        cout << "OPEN AN IMAGE MENU: " << endl;
+        cout << "0 - Up" << endl;
+        cout << "1 - Enter the Name of the Image" << endl;
+        cin >> choice;
+
+        switch (choice)
+        {
+        case '0':
+            return;
+
+        case '1':
+            getline(cin, filename);
+            image.open_image_file();
+            break;
+
+        default:
+            cerr << "Invalid input. Please try again." << endl;
+            break;
+        }
+    }
 }
 
-int ImageEditor::scripts_menu()
+void ImageEditor::display_scripts_menu()
 { /* Function to display scripts menu */
-    cout << "============================================" << endl;
-    cout << "SCRIPTS MENU: " << endl;
-    cout << "0 - Up" << endl;
-    cout << "1 - Convert to Grayscale (D)" << endl;
 
-    int n;
-    cin >> n;
-    return n;
+    char choice = '1';
+    while (choice)
+    {
+        cout << "============================================" << endl;
+        cout << "SCRIPTS MENU: " << endl;
+        cout << "0 - Up" << endl;
+        cout << "1 - Convert to Grayscale (D)" << endl;
+        cin >> choice;
+
+        switch (choice)
+        {
+        case '0':
+            return;
+
+        case '1':
+            display_convert_to_grayscale_menu();
+            break;
+
+        default:
+            cerr << "Invalid input. Please try again." << endl;
+            break;
+        }
+    }
 }
 
-int ImageEditor::save_image_menu()
+void ImageEditor::display_save_image_menu()
 { /* Function to display save image menu */
-    cout << "============================================" << endl;
-    cout << "SAVE IMAGE DATA MENU: " << endl;
-    cout << "0 - Up" << endl;
-    cout << "1 - Enter A Filename" << endl;
+    string filename;
+    char choice = '1';
+    while (choice)
+    {
+        cout << "============================================" << endl;
+        cout << "SAVE IMAGE DATA MENU: " << endl;
+        cout << "0 - Up" << endl;
+        cout << "1 - Enter A Filename" << endl;
+        cin >> choice;
 
-    int n;
-    cin >> n;
-    return n;
+        switch (choice)
+        {
+        case '0':
+            return;
+
+        case '1':
+            getline(cin, filename);
+            image.save_image();
+            break;
+
+        default:
+            cerr << "Invalid input. Please try again." << endl;
+            break;
+        }
+    }
 }
 
-int ImageEditor::display_menu()
+void ImageEditor::display_main_menu()
 { /* Function to display main menu */
-    cout << "============================================" << endl;
-    cout << "MAIN MENU: " << endl;
-    cout << "0 - Exit" << endl;
-    cout << "1 - Open An Image(D)" << endl;
-    cout << "2 - Save Image Data(D)" << endl;
-    cout << "3 - Scripts(D)" << endl;
 
-    int n;
-    cin >> n;
-    return n;
+    char choice = '1';
+    while (choice)
+    {
+        cout << "============================================" << endl;
+        cout << "MAIN MENU: " << endl;
+        cout << "0 - Exit" << endl;
+        cout << "1 - Open An Image(D)" << endl;
+        cout << "2 - Save Image Data(D)" << endl;
+        cout << "3 - Scripts(D)" << endl;
+        cin >> choice;
+
+        switch (choice)
+        {
+        case '0':
+            cout << "Exiting program..." << endl;
+            return;
+
+        case '1':
+            display_open_image_menu();
+            break;
+
+        case '2':
+            if (image.get_filename() == "\0")
+            {
+                cerr << "There is no file to save. Please open a file first." << endl;
+                break;
+            }
+
+            display_save_image_menu();
+            break;
+
+        case '3':
+            if (image.get_filename() == "\0")
+            {
+                cerr << "There is no file to modify. Please open a file first." << endl;
+                break;
+            }
+            display_scripts_menu();
+            break;
+
+        default:
+            cerr << "Invalid Input. Please try again." << endl;
+            break;
+        }
+    }
 }
 
 void ImageEditor::run()
 { /* Function to run the image editor */
-    int input = display_menu();
-
-    /* Loop to display hte main menu and sub-menus*/
-    while (input)
-    {
-        int input2 = 1;
-        if (input == 1)
-        {
-            while (input2)
-            {
-                int input3 = 1;
-                input2 = open_image_menu();
-
-                if (input2 == 1)
-                {
-                    while (input3)
-                    {
-                        input3 = image.open_image_file();
-                    }
-                }
-            }
-        }
-
-        else if (input == 2)
-        {
-            while (input2)
-            {
-                input2 = save_image_menu();
-
-                if (input2 == 1)
-                    image.save_image();
-            }
-        }
-
-        else if (input == 3)
-        {
-            while (input2)
-            {
-                int input3 = 1;
-                input2 = scripts_menu();
-
-                if (input2 == 1)
-                    while (input3)
-                        input3 = convert_to_grayscale_menu();
-            }
-        }
-
-        input = display_menu();
-    }
-
-    cout << "============================================\nExiting Program..." << endl;
+    display_main_menu();
 }
 
 int main()
