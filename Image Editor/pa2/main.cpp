@@ -150,9 +150,7 @@ void Image::delete_comments_from_file(ifstream &imageFile)
 }
 
 void Image::check_fileheader_errors(ifstream &tempFileIn)
-{
-    // ifstream tempFileIn(tempFileName);
-
+{ /* Function for error-checking the file header and making sure the file is of correct format */
     /* Read the PPM header and store the values */
     tempFileIn >> magicNumber >> height >> width >> maxColorVal;
 
@@ -187,7 +185,6 @@ void Image::store_pixel_values()
             innerVector[j] = temp;
         }
 
-        // Pushing back the inner vector into the outer vector
         pixelVector.push_back(innerVector);
     }
 
@@ -200,7 +197,7 @@ int Image::open_image_file()
     string s;
     cin >> s;
     filename = s;
-    // set_image_filename(s);
+    set_image_filename(s);
 
     ifstream imageFile(filename);
     if (!imageFile.is_open())
@@ -210,9 +207,11 @@ int Image::open_image_file()
     }
 
     delete_comments_from_file(imageFile); // Checking the file for comments and deleting them
+    pixelVector.clear();                  // Clearing the vector to make sure the last opened imnage is deleted
     store_pixel_values();                 // Copy the pixel values to local object vector
 
-    imageFile.close();
+    imageFile.close(); // closing file
+
     return 0;
 }
 
@@ -244,6 +243,8 @@ void Image::save_image()
     if (len < 4 || (s.substr(len - 4, 4) != ".ppm"))
         s += ".ppm";
 
+    // cout << "new files name: " << s << endl;
+
     ofstream newImageFile(s);
 
     /* Storing header information into the new file */
@@ -262,6 +263,8 @@ void Image::save_image()
                          << pixelVector.at(i).at(j).get_blue_pixel() << endl;
         }
     }
+
+    newImageFile.close();
 }
 
 /********* IMAGE EDITTOR CLASS *********/
