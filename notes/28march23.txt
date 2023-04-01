@@ -1,0 +1,73 @@
+OPERTARO OVERLOADING
+
+- Operators such as +, -, %, ==, etc are really just functions
+  which are called using a different syntax
+
+- Think of x + 7 as +(x, 7) or 
+	- + is the function name, x,7 are the arguments 
+	- ffunctio "+" returns a sum value
+
+- ALWYAS OVERLOAD WITH SIMILAR ACTIONS !!
+
+
+OVERLOADING BASICS
+- Very similar to overloading functions
+- operator itself is the name fohte function
+
+- Example Decleration:
+
+	const Money operator+( const Money& amount1, 
+			       const Money& amount2);
+	- Overloads + for the operands of type Money
+	- Uses constant reference parameters for efficiency
+	- Returned value is type Money
+		- Allows addition of "Money" objects
+
+
+OVERLOADED "+" 
+- overloaded "+" is NOT a member function
+- Definition id "more involved" than simple "add"
+	- Requires issues of money type addition
+	- must handle negative/positive values
+
+- Operator overload definitions generally very simple
+	- Just perform "addition" particular to "your" type
+
+
+CONSTRUCTORS RETURNING OBJECTS
+- Constructor is a special function that can return a value
+- Recall return statement in "+" overload for Money type:
+	- return Money(finalDollars, finalCents);
+		- Returns an "invocation" of Money class
+		- Constructor actually "returns" an object called
+		  anonymous object
+
+RETURNING BY CONST VALUE
+- Consider "+" operator overload again:
+	const Money operator +(const Money& amount1,
+			       const Money& amount2);
+- Not including the const allows for modification of the anonymous object
+
+
+CONST FUNCTIONS
+- When to make function const?
+	- Constant functions not allowed to alter 
+ 	  class member data
+	- Constant objects can ONLY call 
+	  constant member functions
+
+- Good style dictates:
+	- Any member function that will NOT modify data
+	  should be made const
+
+- Use Keyword const after function declaration and heading
+
+
+
+OVERLOADING OPERATOR: WHICH METHOD?
+- OOP
+	- Principles suggest member operators
+	
+- Member operators more efficient
+	- No need to call accessor & mutator functions
+
