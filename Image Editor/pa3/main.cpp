@@ -3,68 +3,20 @@
 #include <string>
 #include <vector>
 #include <cstring>
+#include <iomanip>
 
 using namespace std;
 
-/********* PIXEL CLASS *********/
-// class Pixel
-//{ /* Class to store the color values of each pixel in the image  */
-/*private:
-    int r, g, b; // integer values for red, green, and blue pixels
-
-public:
-    Pixel();                             // Default constructor
-    Pixel(int red, int green, int blue); // Constructor which initializes the pixel colors
-    Pixel(int red);
-
-    // Setter functions
-    void set_pixel_values(int red, int green, int blue);
-    void set_red_pixel(int red);
-    void set_green_pixel(int green);
-    void set_blue_pixel(int blue);
-
-    // Getter functions
-    int get_red_pixel() const;
-    int get_green_pixel() const;
-    int get_blue_pixel() const;
-};
-
-Pixel::Pixel() // Default constructor
-{
-    r = 0;
-    g = 0;
-    b = 0;
+int numDigits(int n)
+{ // Helper function for output operator formatting
+    int count = 0;
+    while (n > 0)
+    {
+        n /= 10;
+        count++;
+    }
+    return count;
 }
-
-Pixel::Pixel(int red, int green, int blue) // Constructor which initializes the pixel colors
-{
-    r = red;
-    g = green;
-    b = blue;
-}
-
-// Setter functions for individual pixel values
-void Pixel::set_red_pixel(int red) { r = red; }
-
-void Pixel::set_green_pixel(int green) { g = green; }
-
-void Pixel::set_blue_pixel(int blue) { b = blue; }
-
-// Getter functions to get the individual pixel values
-int Pixel::get_red_pixel() const { return r; }
-
-int Pixel::get_green_pixel() const { return g; }
-
-int Pixel::get_blue_pixel() const { return b; }
-
-void Pixel::set_pixel_values(int red, int green, int blue) // Function to set the pixel values
-{
-    r = red;
-    g = green;
-    b = blue;
-}
-*/
-
 /********* IMAGE CLASS *********/
 class Image
 { /* Class to store the image and its file information */
@@ -111,6 +63,9 @@ public:
     int get_red_pixel(int x, int y) const { return pixelVector[x][y].r; }
     int get_green_pixel(int x, int y) const { return pixelVector[x][y].g; }
     int get_blue_pixel(int x, int y) const { return pixelVector[x][y].b; }
+    // const int &get_red_pixel(int x, int y) const { return pixelVector[x][y].r; }
+    // const int &get_green_pixel(int x, int y) const { return pixelVector[x][y].g; }
+    // const int &get_blue_pixel(int x, int y) const { return pixelVector[x][y].b; }
 
     string get_filename() const;
     string get_magic_number() const;
@@ -121,6 +76,9 @@ public:
     Image operator+(const Image &other) const;
     Image operator-(const Image &other) const;
     Image &operator=(const Image &other);
+    int &operator()(int row, int col, int channel);
+
+    friend ostream &operator<<(ostream &os, const Image &image);
 
 private:
     // stores the name of the file
@@ -167,7 +125,6 @@ Image::Image(int row, int col)
 
 Image::Image(string s)
 { // Constructor which takes a filename and creates an object
-
     set_image_filename(s);
 
     // If the file could not be opened
@@ -186,7 +143,7 @@ Image::Image(string s)
         imageFile.close();
         return;
     }
-
+    pixelVector = vector<vector<Pixel>>(height, vector<Pixel>(width));
     set_pixel_values(fileVector); // Copy the pixel values to object member vector
 
     imageFile.close(); // closing file
@@ -323,11 +280,6 @@ void Image::set_magic_number(string s) { magicNumber = s; }    // Setter functio
 void Image::set_height(int h) { height = h; }                  // Setter function for height
 void Image::set_width(int w) { width = w; }                    // Setter function for width
 
-// const vector<vector<Pixel>> &get_pixels() const
-//{
-//   return pixelVector;
-//}
-
 void Image::print_image_dimensions() const
 {
     cout << "IMAGE DIMENSIONS:" << endl;
@@ -440,6 +392,87 @@ Image Image::operator-(const Image &other) const
     }
     return returnVal;
 }
+int &Image::operator()(int row, int col, int channel)
+{
+    if (row < 0 || row >= height || col < 0 || col >= width || channel < 1 || channel > 3)
+    {
+        cerr << "Out of bounds error!" << endl;
+        exit(1);
+    }
+    if (channel == 1)
+    {
+        cout << "fxn: r: " << pixelVector[row][col].r << " "
+             << "fxn: g: " << pixelVector[row][col].g << " "
+             << "fxn: b: " << pixelVector[row][col].b << " " << endl;
+        return pixelVector[row][col].r;
+    }
+
+    else if (channel == 2)
+        return pixelVector[row][col].g;
+
+    else if (channel == 3)
+        return pixelVector[row][col].b;
+
+    else
+    {
+        cerr << "Undefined error" << endl;
+        exit(1);
+    }
+}
+ostream &operator<<(ostream &os, const Image &image)
+{
+    cout << image.magicNumber << endl;
+    cout << image.height << " " << image.width << endl;
+    cout << image.maxColorVal << endl;
+
+    /*for (int i = 0; i < image.height; i++)
+    {
+        for (int j = 0; j < image.width; j++)
+        {
+            cout << image.pixelVector[i][j].r
+                 << "    " << image.pixelVector[i][j].g
+                 << "    " << image.pixelVector[i][j].b << "\t\t";
+        }
+        cout << endl;
+    }
+
+    for (int i = 0; i < image.height; i++)
+    {
+        for (int j = 0; j < image.width; j++)
+        {
+            cout << image.pixelVector[i][j].r
+                 << setw(4) << image.pixelVector[i][j].g
+                 << setw(4) << image.pixelVector[i][j].b << "\t";
+        }
+        cout << endl;
+    }*/
+
+    const int maxDigit = 3;
+
+    for (int i = 0; i < image.height; i++)
+    {
+        for (int j = 0; j < image.width; j++)
+        {
+            cout << image.pixelVector[i][j].r;
+            for (int k = 0; k < maxDigit - numDigits(image.pixelVector[i][j].r); k++)
+                cout << " ";
+
+            cout << " ";
+            cout << image.pixelVector[i][j].g;
+            for (int k = 0; k < maxDigit - numDigits(image.pixelVector[i][j].g); k++)
+                cout << " ";
+
+            cout << " ";
+            cout << image.pixelVector[i][j].b;
+            for (int k = 0; k < maxDigit - numDigits(image.pixelVector[i][j].b); k++)
+                cout << " ";
+
+            cout << "\t";
+        }
+        cout << endl;
+    }
+    return os;
+}
 
 /* Standalone Functions */
 int read_ppm(const string source_ppm_file_name, Image &destination_object);
@@ -493,22 +526,37 @@ int main(int argc, char **argv)
         Image destination;
 
         int returnVal = read_ppm(ppm_file_name1, destination);
+        cout << destination << endl
+             << destination << endl;
         if (returnVal == 0)
         {
             cerr << "Error. Program terminating..." << endl;
             exit(1);
         }
 
-        // swap_channels();
+        // swap_channels(destination, 2);
+
         write_ppm("ppm_file_name2", destination);
     }
 
-    /*
     // If choice is number 4
-    read_ppm(ppm_file_name1);
-    swap_channels(red, blue);
-    write_ppm("ppm_file_name2");
+    if (choice == "4" && argc == 3)
+    {
+        string ppm_file_name1(argv[2]);
+        Image destination;
 
+        int returnVal = read_ppm(ppm_file_name1, destination);
+        if (returnVal == 0)
+        {
+            cerr << "Error. Program terminating..." << endl;
+            exit(1);
+        }
+
+        // swap_channels(GREEN, BLUE);
+
+        write_ppm("ppm_file_name2", destination);
+    }
+    /*
     // If choice is number 5
     read_ppm(ppm_file_name1);
     // Create a new object which only contains RED channel data of the file read
@@ -632,5 +680,37 @@ int read_ppm(const string source_ppm_file_name, Image &destination_object)
     }
 
     sourceFile.close();
+    return 1;
+}
+
+int swap_channels(Image &image_object_to_be_modified, int swap_choice)
+{
+    // Swap choice 1: red and green
+    // Swap choice 2: red and blue
+    // Swap choice 3: green and blue
+
+    for (int i = 0; i < image_object_to_be_modified.get_height(); i++)
+    {
+        for (int j = 0; j < image_object_to_be_modified.get_width(); j++)
+        {
+            cout << image_object_to_be_modified.get_red_pixel(i, j) << " "
+                 << image_object_to_be_modified.get_green_pixel(i, j)
+                 << " " << image_object_to_be_modified.get_blue_pixel(i, j) << endl;
+        }
+    }
+
+    if (swap_choice == 2)
+    {
+        for (int i = 0; i < image_object_to_be_modified.get_height(); i++)
+        {
+            for (int j = 0; j < image_object_to_be_modified.get_width(); j++)
+            {
+                int temp = image_object_to_be_modified(i, j, 1);
+                cout << "i" << i << "j" << j << " ," << temp << endl;
+                image_object_to_be_modified.set_red_pixel(i, j, image_object_to_be_modified.get_blue_pixel(i, j));
+                image_object_to_be_modified.set_blue_pixel(i, j, temp);
+            }
+        }
+    }
     return 1;
 }
