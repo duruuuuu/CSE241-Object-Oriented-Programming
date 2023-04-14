@@ -424,29 +424,6 @@ ostream &operator<<(ostream &os, const Image &image)
     cout << image.magicNumber << endl;
     cout << image.height << " " << image.width << endl;
     cout << image.maxColorVal << endl;
-
-    /*for (int i = 0; i < image.height; i++)
-    {
-        for (int j = 0; j < image.width; j++)
-        {
-            cout << image.pixelVector[i][j].r
-                 << "    " << image.pixelVector[i][j].g
-                 << "    " << image.pixelVector[i][j].b << "\t\t";
-        }
-        cout << endl;
-    }
-
-    for (int i = 0; i < image.height; i++)
-    {
-        for (int j = 0; j < image.width; j++)
-        {
-            cout << image.pixelVector[i][j].r
-                 << setw(4) << image.pixelVector[i][j].g
-                 << setw(4) << image.pixelVector[i][j].b << "\t";
-        }
-        cout << endl;
-    }*/
-
     const int maxDigit = 3;
 
     for (int i = 0; i < image.height; i++)
