@@ -44,7 +44,7 @@ public:
     ppmImage(string s);                        // Creates an object from filename
     ppmImage(int row, int col, int maxColour); // Initializes height, width, and max color value
     ppmImage(int row, int col);                // Creates an empty object with the given dimensions
-    ppmImage(const ppmImage &other);           // Copy constructor
+                                               // ppmImage(const ppmImage &other);           // Copy constructor
 
     // Setter functions
     void set_red_pixel(int x, int y, int red); // Sets individual pixel channels by getting the index values
@@ -78,7 +78,7 @@ public:
 
     ppmImage operator+(const ppmImage &other) const; // Adds two ppm Images' pixels
     ppmImage operator-(const ppmImage &other) const; // Subtracts two ppm Images' pixels
-    ppmImage &operator=(const ppmImage &other);      // Assigns one ppmImage to another
+                                                     // ppmImage &operator=(const ppmImage &other);      // Assigns one ppmImage to another
     int &operator()(int row, int col, int channel);  // Function call operator returns specific color channel by the given parameters
 
     friend ostream &operator<<(ostream &os, const ppmImage &image); // Prints ppm Image pixel vector to stdout
@@ -99,11 +99,11 @@ private:
     bool check_fileheader(const vector<string> &fileVector);               // Function for chekcing the file for errors
 
     // Constant values of the indices for the header information that will be stored in a string vector
-    const int magicNumberIndex = 0;
-    const int heightIndex = 1;
-    const int widthIndex = 2;
-    const int maxColorIndex = 3;
-    const int pixelStartIndex = 4;
+    // const int magicNumberIndex = 0;
+    // const int heightIndex = 1;
+    // const int widthIndex = 2;
+    // const int maxColorIndex = 3;
+    // const int pixelStartIndex = 4;
 
     // vector of type Pixel to hold the pixel values of the image
     vector<vector<Pixel>> pixelVector;
@@ -165,7 +165,7 @@ ppmImage::ppmImage(int row, int col, int maxColour)
     pixelVector = vector<vector<Pixel>>(row, vector<Pixel>(col));
 }
 
-ppmImage::ppmImage(const ppmImage &other)
+/*ppmImage::ppmImage(const ppmImage &other)
 { // Copy constructor to create a copy of an object
     this->filename = other.filename;
     this->magicNumber = other.magicNumber;
@@ -188,9 +188,9 @@ ppmImage::ppmImage(const ppmImage &other)
         }
         pixelVector.push_back(innerVector);
     }
-}
+}*/
 
-ppmImage &ppmImage::operator=(const ppmImage &other)
+/*ppmImage &ppmImage::operator=(const ppmImage &other)
 { // Assignment operator to assign one image object to another using a deep copy
   // To avoid any issues with copying teh vectors
     if (this != &other)
@@ -218,7 +218,7 @@ ppmImage &ppmImage::operator=(const ppmImage &other)
         }
     }
     return *this;
-}
+}*/
 
 void ppmImage::delete_comments(ifstream &imageFile, vector<string> &fileVector)
 { /*
@@ -256,10 +256,10 @@ bool ppmImage::check_fileheader(const vector<string> &fileVector)
 { /* Function for error-checking the file header and making sure the file is of correct format */
 
     // Store header information in the object variables
-    magicNumber = fileVector[magicNumberIndex];
-    height = stoi(fileVector[heightIndex]);
-    width = stoi(fileVector[widthIndex]);
-    maxColorVal = stoi(fileVector[maxColorIndex]);
+    // magicNumber = fileVector[magicNumberIndex];
+    // height = stoi(fileVector[heightIndex]);
+    // width = stoi(fileVector[widthIndex]);
+    // maxColorVal = stoi(fileVector[maxColorIndex]);
 
     /* If the magic number is wrong */
     if (magicNumber != "P3")
@@ -275,7 +275,7 @@ bool ppmImage::check_fileheader(const vector<string> &fileVector)
 void ppmImage::set_pixel_values(const vector<string> &fileVector)
 { /* Function to copy the pixel values from the file and store them in the image object's vector*/
 
-    int rIndex = pixelStartIndex, gIndex = pixelStartIndex + 1, bIndex = pixelStartIndex + 2;
+    // int rIndex = pixelStartIndex, gIndex = pixelStartIndex + 1, bIndex = pixelStartIndex + 2;
 
     // Copying the pixel values to the object's vector
     for (int i = 0; i < height; i++)
@@ -287,9 +287,9 @@ void ppmImage::set_pixel_values(const vector<string> &fileVector)
         {
             // Creating a temporary pixel object and assigning it to the inner vector
             int r, g, b;
-            r = stoi(fileVector[rIndex]);
-            g = stoi(fileVector[gIndex]);
-            b = stoi(fileVector[bIndex]);
+            // r = stoi(fileVector[rIndex]);
+            // g = stoi(fileVector[gIndex]);
+            // b = stoi(fileVector[bIndex]);
 
             // Setting pixels in the vector
             innerVector[j].r = r;
@@ -297,9 +297,9 @@ void ppmImage::set_pixel_values(const vector<string> &fileVector)
             innerVector[j].b = b;
 
             // Incrementing pixel value indices
-            rIndex += 3;
-            gIndex += 3;
-            bIndex += 3;
+            // rIndex += 3;
+            // gIndex += 3;
+            // bIndex += 3;
         }
         pixelVector.push_back(innerVector);
     }
@@ -814,9 +814,9 @@ int main(int argc, char **argv)
         // Testing print function
         string filename(argv[2]);
         test_print(filename);
-    */
 
-    return 0;
+        return 0;
+    */
 }
 
 int test_addition(const string filename_image1, const string filename_image2, const string filename_image3)
