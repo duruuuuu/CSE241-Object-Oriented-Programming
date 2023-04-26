@@ -1,0 +1,9 @@
+!!! Check if iflename construcctor for Image class works
+!!! Check dimensions constructorand check if you can open a new image w it as well
+
+questions:
+- can i use my pixel class instead of a struct? assuming yes.
+- for the function that returns individual pixel info, does it return just one color channel
+  or all of the color in the pixel?
+- wtf is the () operator supposed to do exactly????
+    int c = image1(row, col, r/g/b)
