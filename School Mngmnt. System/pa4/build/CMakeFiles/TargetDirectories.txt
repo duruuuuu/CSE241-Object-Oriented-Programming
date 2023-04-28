@@ -1,0 +1,2 @@
+/home/duruwu/School/CSE241/School Mngmnt. System/pa4/build/CMakeFiles/rebuild_cache.dir
+/home/duruwu/School/CSE241/School Mngmnt. System/pa4/build/CMakeFiles/edit_cache.dir
