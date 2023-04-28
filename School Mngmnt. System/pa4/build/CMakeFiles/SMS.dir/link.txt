@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/SMS.dir/main.cpp.o CMakeFiles/SMS.dir/Student.cpp.o CMakeFiles/SMS.dir/Course.cpp.o CMakeFiles/SMS.dir/SchoolManagerSystem.cpp.o  -o SMS 

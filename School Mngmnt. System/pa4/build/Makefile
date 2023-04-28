@@ -110,6 +110,127 @@ depend:
 	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
+#=============================================================================
+# Target rules for targets named SMS
+
+# Build rule for target.
+SMS: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 SMS
+.PHONY : SMS
+
+# fast build rule for target.
+SMS/fast:
+	$(MAKE) -f CMakeFiles/SMS.dir/build.make CMakeFiles/SMS.dir/build
+.PHONY : SMS/fast
+
+Course.o: Course.cpp.o
+
+.PHONY : Course.o
+
+# target to build an object file
+Course.cpp.o:
+	$(MAKE) -f CMakeFiles/SMS.dir/build.make CMakeFiles/SMS.dir/Course.cpp.o
+.PHONY : Course.cpp.o
+
+Course.i: Course.cpp.i
+
+.PHONY : Course.i
+
+# target to preprocess a source file
+Course.cpp.i:
+	$(MAKE) -f CMakeFiles/SMS.dir/build.make CMakeFiles/SMS.dir/Course.cpp.i
+.PHONY : Course.cpp.i
+
+Course.s: Course.cpp.s
+
+.PHONY : Course.s
+
+# target to generate assembly for a file
+Course.cpp.s:
+	$(MAKE) -f CMakeFiles/SMS.dir/build.make CMakeFiles/SMS.dir/Course.cpp.s
+.PHONY : Course.cpp.s
+
+SchoolManagerSystem.o: SchoolManagerSystem.cpp.o
+
+.PHONY : SchoolManagerSystem.o
+
+# target to build an object file
+SchoolManagerSystem.cpp.o:
+	$(MAKE) -f CMakeFiles/SMS.dir/build.make CMakeFiles/SMS.dir/SchoolManagerSystem.cpp.o
+.PHONY : SchoolManagerSystem.cpp.o
+
+SchoolManagerSystem.i: SchoolManagerSystem.cpp.i
+
+.PHONY : SchoolManagerSystem.i
+
+# target to preprocess a source file
+SchoolManagerSystem.cpp.i:
+	$(MAKE) -f CMakeFiles/SMS.dir/build.make CMakeFiles/SMS.dir/SchoolManagerSystem.cpp.i
+.PHONY : SchoolManagerSystem.cpp.i
+
+SchoolManagerSystem.s: SchoolManagerSystem.cpp.s
+
+.PHONY : SchoolManagerSystem.s
+
+# target to generate assembly for a file
+SchoolManagerSystem.cpp.s:
+	$(MAKE) -f CMakeFiles/SMS.dir/build.make CMakeFiles/SMS.dir/SchoolManagerSystem.cpp.s
+.PHONY : SchoolManagerSystem.cpp.s
+
+Student.o: Student.cpp.o
+
+.PHONY : Student.o
+
+# target to build an object file
+Student.cpp.o:
+	$(MAKE) -f CMakeFiles/SMS.dir/build.make CMakeFiles/SMS.dir/Student.cpp.o
+.PHONY : Student.cpp.o
+
+Student.i: Student.cpp.i
+
+.PHONY : Student.i
+
+# target to preprocess a source file
+Student.cpp.i:
+	$(MAKE) -f CMakeFiles/SMS.dir/build.make CMakeFiles/SMS.dir/Student.cpp.i
+.PHONY : Student.cpp.i
+
+Student.s: Student.cpp.s
+
+.PHONY : Student.s
+
+# target to generate assembly for a file
+Student.cpp.s:
+	$(MAKE) -f CMakeFiles/SMS.dir/build.make CMakeFiles/SMS.dir/Student.cpp.s
+.PHONY : Student.cpp.s
+
+main.o: main.cpp.o
+
+.PHONY : main.o
+
+# target to build an object file
+main.cpp.o:
+	$(MAKE) -f CMakeFiles/SMS.dir/build.make CMakeFiles/SMS.dir/main.cpp.o
+.PHONY : main.cpp.o
+
+main.i: main.cpp.i
+
+.PHONY : main.i
+
+# target to preprocess a source file
+main.cpp.i:
+	$(MAKE) -f CMakeFiles/SMS.dir/build.make CMakeFiles/SMS.dir/main.cpp.i
+.PHONY : main.cpp.i
+
+main.s: main.cpp.s
+
+.PHONY : main.s
+
+# target to generate assembly for a file
+main.cpp.s:
+	$(MAKE) -f CMakeFiles/SMS.dir/build.make CMakeFiles/SMS.dir/main.cpp.s
+.PHONY : main.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -117,7 +238,20 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
+	@echo "... SMS"
 	@echo "... edit_cache"
+	@echo "... Course.o"
+	@echo "... Course.i"
+	@echo "... Course.s"
+	@echo "... SchoolManagerSystem.o"
+	@echo "... SchoolManagerSystem.i"
+	@echo "... SchoolManagerSystem.s"
+	@echo "... Student.o"
+	@echo "... Student.i"
+	@echo "... Student.s"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
 .PHONY : help
 
 
