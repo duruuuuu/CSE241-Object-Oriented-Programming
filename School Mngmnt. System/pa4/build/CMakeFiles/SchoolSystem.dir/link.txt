@@ -1,1 +1,0 @@
-/usr/bin/c++     CMakeFiles/SchoolSystem.dir/main.cpp.o  -o SchoolSystem 
