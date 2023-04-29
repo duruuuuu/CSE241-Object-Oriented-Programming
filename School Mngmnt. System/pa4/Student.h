@@ -5,6 +5,7 @@
 
 namespace PA4
 {
+    class Course;
     class Student
     {
     public:
@@ -17,7 +18,7 @@ namespace PA4
         Student(std::string n, int id, Course *courses);
         Student(std::string n);
         Student(int id);
-        Student(const Course &courses);
+        // Student(const Course &courses);
         ~Student();
 
         // Setter Functions
@@ -29,14 +30,16 @@ namespace PA4
         // Getter Functions
         std::string get_name() const;
         int get_id() const;
-        Course *get_courses() const;
+        Course **get_courses() const;
 
         Student &operator=(const Student &other);
 
     private:
         std::string name;
         int ID;
-        Course *coursesTaken;
+
+        // coursesTaken pointer points to an array of pointers that points to Courses
+        Course **coursesTaken;
         int coursesTakenSize;
         int coursesTakenCapacity;
     };

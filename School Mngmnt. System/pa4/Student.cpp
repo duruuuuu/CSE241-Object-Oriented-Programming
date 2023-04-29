@@ -2,6 +2,9 @@
 #include "Student.h"
 #include "Course.h"
 
+const int SENT_VAL = -999;
+const int INIT_CAPACITY = 10;
+
 namespace
 {
     // Unnamed namespace is useds for helping functions
@@ -15,8 +18,8 @@ namespace PA4
     {
         // Default Constructor creates an empty array of courses taken by the student
         coursesTakenSize = 0;
-        coursesTakenCapacity = 10;
-        coursesTaken = new Course[coursesTakenCapacity];
+        coursesTakenCapacity = INIT_CAPACITY;
+        coursesTaken = new Course *[coursesTakenCapacity];
     }
 
     Student::Student(const Student &copy)
@@ -24,13 +27,11 @@ namespace PA4
           coursesTakenCapacity(copy.coursesTakenCapacity)
     {
         // Create a new array for the copied courses
-        coursesTaken = new Course[coursesTakenCapacity];
+        coursesTaken = new Course *[coursesTakenCapacity];
 
         // Copy the courses from the original student
         for (int i = 0; i < coursesTakenSize; i++)
-        {
             coursesTaken[i] = copy.coursesTaken[i];
-        }
     }
 
     Student::Student(std::string n, int id)
@@ -40,7 +41,7 @@ namespace PA4
 
         coursesTakenSize = 0;
         coursesTakenCapacity = 10;
-        coursesTaken = new Course[coursesTakenCapacity];
+        coursesTaken = new Course *[coursesTakenCapacity];
     }
 
     // Student(std::string n, int id, Course *courses);
@@ -51,17 +52,16 @@ namespace PA4
         ID = -1;
 
         coursesTakenSize = 0;
-        coursesTakenCapacity = 10;
-        coursesTaken = new Course[coursesTakenCapacity];
+        coursesTakenCapacity = INIT_CAPACITY;
+        coursesTaken = new Course *[coursesTakenCapacity];
     }
 
     Student::Student(int id)
+        : ID(id)
     {
-        ID = id;
-
         coursesTakenSize = 0;
-        coursesTakenCapacity = 10;
-        coursesTaken = new Course[coursesTakenCapacity];
+        coursesTakenCapacity = INIT_CAPACITY;
+        coursesTaken = new Course *[coursesTakenCapacity];
     }
 
     // Student(Course &courses);
@@ -86,7 +86,7 @@ namespace PA4
             delete[] coursesTaken;
             coursesTakenSize = other.coursesTakenSize;
             coursesTakenCapacity = other.coursesTakenCapacity;
-            coursesTaken = new Course[coursesTakenCapacity];
+            coursesTaken = new Course *[coursesTakenCapacity];
             for (int i = 0; i < coursesTakenSize; i++)
             {
                 coursesTaken[i] = other.coursesTaken[i];
@@ -106,5 +106,5 @@ namespace PA4
 
     std::string Student::get_name() const { return name; }
     int Student::get_id() const { return ID; }
-    Course *Student::get_courses() const { return coursesTaken; }
+    Course **Student::get_courses() const { return coursesTaken; }
 }
