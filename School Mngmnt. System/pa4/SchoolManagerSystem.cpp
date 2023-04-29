@@ -9,7 +9,16 @@ const std::string SENT_STR = "-999";
 namespace
 {
     // Unnamed namespace is used for helping functions
+    void parse_input_line(std::string inputLine, std::string &name, std::string &code)
+    {
+        // Create substring for course code
+        std::size_t pos = inputLine.find(' ');
+        code = inputLine.substr(0, pos);
 
+        // Create substring for course name
+        if (pos != std::string::npos)
+            name = inputLine.substr(pos + 1);
+    }
 }
 
 namespace PA4
@@ -274,8 +283,10 @@ namespace PA4
     void SchoolSystem::add_course()
     {
         // Getting course information
-        std::string name, code;
-        std::cin >> name >> code;
+        std::string name, code, inputLine;
+        std::cin.ignore();
+        std::getline(std::cin, inputLine);
+        parse_input_line(inputLine, name, code);
 
         // If the capactiy of the array is enough, add the student to the lsit
         if (courseListSize < courseListCapacity)
@@ -298,11 +309,13 @@ namespace PA4
     { // Printing menu
         std::cout << "\nSELECT COURSE" << std::endl;
 
-        // Getting name and id
-        std::string name, code;
-        std::cin >> name >> code;
+        // Getting course information
+        std::string name, code, inputLine;
+        std::cin.ignore();
+        std::getline(std::cin, inputLine);
+        parse_input_line(inputLine, name, code);
 
-        // Find the student in the list and create a temporary object for it
+        // Find the course in the list and create a temporary object for it
         Course selectedCourse = select_course(name, code);
 
         if (selectedCourse.get_code() == SENT_STR)
@@ -357,7 +370,7 @@ namespace PA4
                 // TODO: Continue checking if the ID does not match
             }
         }
-        std::cout << "Student Not Found" << std::endl;
+        std::cout << "Course Not Found" << std::endl;
         return Course(SENT_STR, SENT_STR);
     }
 
@@ -377,21 +390,24 @@ namespace PA4
         }
 
         // Shift all elements after index to the left
-        for (int j = i; j < studentListSize - 1; j++)
+        for (int j = i; j < courseListSize - 1; j++)
         {
             courseList[j] = courseList[j + 1];
         }
 
         // Decrement size of array
-        studentListSize--;
+        courseListSize--;
+
+        std::cout << "\nNew Course List:" << std::endl;
+        list_all_courses();
     }
 
     void SchoolSystem::list_all_courses()
     {
         for (int i = 0; i < courseListSize; i++)
         {
-            std::cout << i + 1 << ". " << courseList[i].get_name()
-                      << " " << courseList[i].get_code() << std::endl;
+            std::cout << i + 1 << ". " << courseList[i].get_code()
+                      << " " << courseList[i].get_name() << std::endl;
         }
         std::cout << std::endl;
     }

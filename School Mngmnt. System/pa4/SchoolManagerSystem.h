@@ -18,14 +18,21 @@ namespace PA4
         void main_menu();
         void student_menu();
         void course_menu();
+        void select_student_menu();
+
         void list_all_students();
         void list_all_courses();
 
         void add_student();
-        void select_student_menu();
-
+        void delete_student(const Student &toDelete);
         void resize_student_list();
         Student select_student(std::string name, int id);
+        void add_student_to_course(const Student &newStudent);
+
+        void add_course();
+        void select_course_menu();
+        Course select_course(std::string name, std::string code);
+        void delete_course(const Course &toDelete);
         void run();
 
     private:
