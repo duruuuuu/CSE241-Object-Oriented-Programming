@@ -30,16 +30,20 @@ namespace PA4
         // Getter Functions
         std::string get_name() const;
         int get_id() const;
-        Course **get_courses() const;
+        Course *get_courses() const;
+        int get_course_size() const { return coursesTakenSize; }
 
         Student &operator=(const Student &other);
+
+        void add_course(const Course &newCourse);
+        Course get_course(int index);
 
     private:
         std::string name;
         int ID;
 
-        // coursesTaken pointer points to an array of pointers that points to Courses
-        Course **coursesTaken;
+        //
+        Course *coursesTaken;
         int coursesTakenSize;
         int coursesTakenCapacity;
     };

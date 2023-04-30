@@ -18,14 +18,15 @@ namespace PA4
     {
         studentsEnrolledSize = 0;
         studentsEnrolledCapacity = INIT_CAPACITY;
-        studentsEnrolled = new Student[studentsEnrolledCapacity];
+        studentsEnrolled = new Student *[studentsEnrolledCapacity];
     }
 
     Course::Course(const Course &copy)
         : name(copy.name), code(copy.code), studentsEnrolledSize(copy.studentsEnrolledSize), studentsEnrolledCapacity(copy.studentsEnrolledCapacity)
     {
+
         // Create new array for the copied students
-        studentsEnrolled = new Student[studentsEnrolledCapacity];
+        studentsEnrolled = new Student *[studentsEnrolledCapacity];
 
         // Copy the students from the original course
         for (int i = 0; i < studentsEnrolledSize; i++)
@@ -37,7 +38,7 @@ namespace PA4
     {
         studentsEnrolledSize = 0;
         studentsEnrolledCapacity = INIT_CAPACITY;
-        studentsEnrolled = new Student[studentsEnrolledCapacity];
+        studentsEnrolled = new Student *[studentsEnrolledCapacity];
     }
 
     Course::~Course()
@@ -54,7 +55,7 @@ namespace PA4
 
     std::string Course::get_name() const { return name; }
     std::string Course::get_code() const { return code; }
-    Student *Course::get_students() const { return studentsEnrolled; }
+    Student **Course::get_students() const { return studentsEnrolled; }
 
     Course &Course::operator=(const Course &other)
     { // Check for self-assignment
@@ -68,12 +69,27 @@ namespace PA4
             delete[] studentsEnrolled;
             studentsEnrolledSize = other.studentsEnrolledSize;
             studentsEnrolledCapacity = other.studentsEnrolledCapacity;
-            studentsEnrolled = new Student[studentsEnrolledCapacity];
+            studentsEnrolled = new Student *[studentsEnrolledCapacity];
             for (int i = 0; i < studentsEnrolledSize; i++)
             {
                 studentsEnrolled[i] = other.studentsEnrolled[i];
             }
         }
         return *this;
+    }
+
+    void Course::add_student(Student *newStudent)
+    {
+        // TODO: Implement resize of capacity is reached
+        if (studentsEnrolledSize < studentsEnrolledCapacity)
+        {
+            studentsEnrolled[studentsEnrolledSize] = newStudent;
+            studentsEnrolledSize++;
+        }
+    }
+
+    Student Course::get_student(int index) const
+    {
+        return studentsEnrolled[0][index];
     }
 }
