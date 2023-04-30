@@ -73,17 +73,19 @@ namespace PA4
 
             case 2:
                 course_menu();
+                break;
 
             case 3:
                 list_all_students();
                 break;
 
             case 4:
+                std::cout << "\nCOURSE LIST:" << std::endl;
                 list_all_courses();
                 break;
 
             default:
-                std::cout << "Please enter a valid input." << std::endl;
+                std::cout << "Please enter a valid input. MAIN MENU" << std::endl;
                 break;
             }
         }
@@ -95,13 +97,21 @@ namespace PA4
         while (true)
         {
             // Printing menu
-            std::cout << "\nSTUDENT MENU" << std::endl;
+            std::cout << "\n===========================\nSTUDENT MENU" << std::endl;
             std::cout << "0 Up" << std::endl;
             std::cout << "1 Add Student" << std::endl;
             std::cout << "2 Select Student" << std::endl;
 
             int choice;
-            std::cin >> choice;
+            if (!(std::cin >> choice))
+            {
+                // Clearing the error flag and ignoring the invalid input
+                std::cin.clear();
+                std::cin.ignore(10000, '\n');
+                std::cout << "Please enter a valid input STUDENT MENU." << std::endl;
+                continue;
+            }
+
             switch (choice)
             {
             case 0:
@@ -152,7 +162,7 @@ namespace PA4
     void SchoolSystem::select_student_menu()
     {
         // Printing menu
-        std::cout << "\nSELECT STUDENT" << std::endl;
+        std::cout << "\n===========================\nSELECT STUDENT" << std::endl;
 
         // Getting name and id
         std::string name;
@@ -160,14 +170,14 @@ namespace PA4
         std::cin >> name >> id;
 
         // Find the student in the list and create a temporary object for it
-        Student selectedStudent = select_student(name, id);
+        Student *selectedStudent = select_student(name, id);
 
-        if (selectedStudent.get_id() == SENT_VAL)
+        if (selectedStudent == nullptr)
             return;
 
         while (true)
         {
-            std::cout << "0 UP" << std::endl;
+            std::cout << "\n0 UP" << std::endl;
             std::cout << "1 Delete Student" << std::endl;
             std::cout << "2 Add Selected Student to a Course" << std::endl;
 
@@ -188,9 +198,13 @@ namespace PA4
             case 2:
                 // Selecting a student which is already in the list
                 add_student_to_course(selectedStudent);
+                break;
+
+                // case 3:
+                //  drop_student_from_course(selectedStudent);
 
             default:
-                std::cout << "Please enter a valid input." << std::endl;
+                std::cout << "Please enter a valid input. SELECT STUDENT MENU" << std::endl;
                 break;
             }
         }
@@ -198,7 +212,7 @@ namespace PA4
         return;
     }
 
-    Student SchoolSystem::select_student(std::string name, int id)
+    Student *SchoolSystem::select_student(std::string name, int id)
     {
         for (int i = 0; i < studentListSize; i++)
         {
@@ -206,29 +220,88 @@ namespace PA4
             {
                 // If the ID and name are the same, return the student
                 if (studentList[i].get_id() == id)
-                    return studentList[i];
+                    return &studentList[i];
 
                 // TODO: Continue checking if the ID does not match
             }
         }
         std::cout << "Student Not Found" << std::endl;
-        return Student(SENT_VAL);
+        return nullptr;
     }
 
-    void SchoolSystem::add_student_to_course(const Student &newStudent)
+    void SchoolSystem::add_student_to_course(Student *newStudent)
     {
-        // TODO
+        // TODO: Display message if there are no available classes to take
+
+        //  new temporary course list that holds the courses not taken by the student
+        Course **availableCourses = new Course *[courseListSize];
+
+        // temporary course list of courses taken by the student
+        Course *coursesTaken = newStudent->get_courses();
+
+        std::cout << "\n0 UP" << std::endl;
+
+        int count = 0;
+        for (int i = 0; i < courseListSize; i++)
+        {
+            bool flag = false;
+            int j = 0;
+            for (j = 0; j < newStudent->get_course_size(); j++)
+            {
+                // If the course is taken by the student continue
+                if (courseList[i].get_code() == coursesTaken[j].get_code())
+                {
+                    flag = true;
+                    break;
+                }
+            }
+            if (flag == true)
+                continue;
+
+            else
+            {
+                // If course is not taken, add to available course list and display
+                availableCourses[count] = &courseList[i];
+                std::cout << count + 1 << " "
+                          << availableCourses[count]->get_code() << " "
+                          << availableCourses[count]->get_name() << std::endl;
+                count++;
+            }
+        }
+        std::cout << "count: " << count << std::endl;
+        // Get users choice for course
+        int choice;
+        std::cin >> choice;
+
+        if (choice == 0)
+        {
+            delete[] availableCourses;
+            // delete[] coursesTaken;
+            return;
+        }
+
+        else if (choice > count || choice < 0)
+            std::cout << "Invalid choice." << std::endl;
+        else
+        {
+            newStudent->add_course(*availableCourses[choice - 1]);
+            availableCourses[choice - 1]->add_student(newStudent);
+        }
+
+        delete[] availableCourses;
+
+        return;
     }
 
-    void SchoolSystem::delete_student(const Student &toDelete)
+    void SchoolSystem::delete_student(Student *toDelete)
     {
         int i;
         for (i = 0; i < studentListSize; i++)
         {
-            if (studentList[i].get_name() == toDelete.get_name())
+            if (studentList[i].get_name() == toDelete->get_name())
             {
                 // If the ID and name are the same, return the student
-                if (studentList[i].get_id() == toDelete.get_id())
+                if (studentList[i].get_id() == toDelete->get_id())
                     break;
 
                 // TODO: Continue checking if the ID does not match
@@ -250,7 +323,7 @@ namespace PA4
         while (true)
         {
             // Printing menu
-            std::cout << "\nCOURSE MENU" << std::endl;
+            std::cout << "\n===========================\nCOURSE MENU" << std::endl;
             std::cout << "0 Up" << std::endl;
             std::cout << "1 Add Course" << std::endl;
             std::cout << "2 Select Course" << std::endl;
@@ -307,7 +380,7 @@ namespace PA4
 
     void SchoolSystem::select_course_menu()
     { // Printing menu
-        std::cout << "\nSELECT COURSE" << std::endl;
+        std::cout << "\n===========================\nSELECT COURSE" << std::endl;
 
         // Getting course information
         std::string name, code, inputLine;
@@ -323,7 +396,7 @@ namespace PA4
 
         while (true)
         {
-            std::cout << "0 UP" << std::endl;
+            std::cout << "\n0 UP" << std::endl;
             std::cout << "1 Delete Course" << std::endl;
             std::cout << "2 List Students in Course" << std::endl;
 
@@ -343,12 +416,12 @@ namespace PA4
 
             case 2:
                 // Selecting a student which is already in the list
-                // add_student_to_course(selectedCourse);
+                list_students_in_course(selectedCourse);
                 break;
 
             default:
                 std::cout
-                    << "Please enter a valid input."
+                    << "Please enter a valid input SELECT COURSE MENU."
                     << std::endl;
                 break;
             }
@@ -391,15 +464,23 @@ namespace PA4
 
         // Shift all elements after index to the left
         for (int j = i; j < courseListSize - 1; j++)
-        {
             courseList[j] = courseList[j + 1];
-        }
 
         // Decrement size of array
         courseListSize--;
 
         std::cout << "\nNew Course List:" << std::endl;
         list_all_courses();
+    }
+
+    void SchoolSystem::list_students_in_course(const Course &select)
+    {
+        std::cout << "\nStudents Enrolled:" << std::endl;
+        for (int i = 0; i < select.get_students_size(); i++)
+        {
+            std::cout << i + 1 << ". " << select.get_student(i).get_name()
+                      << " " << select.get_student(i).get_id() << std::endl;
+        }
     }
 
     void SchoolSystem::list_all_courses()
@@ -414,6 +495,7 @@ namespace PA4
 
     void SchoolSystem::list_all_students()
     {
+        std::cout << "\nSTUDENT LIST:" << std::endl;
         for (int i = 0; i < studentListSize; i++)
         {
             std::cout << i + 1 << ". " << studentList[i].get_name()
