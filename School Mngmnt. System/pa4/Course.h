@@ -23,6 +23,8 @@ namespace PA4
         // Setter Functions
         void set_name_code(std::string n, std::string c);
         // void set_students(const Course &courses);
+        void set_student(Student *student, int index);
+        void set_students_size(int size);
 
         // Getter Functions
         std::string get_name() const;
@@ -33,8 +35,9 @@ namespace PA4
 
         void add_student(Student *newStudent);
         Student get_student(int index) const;
-
+        Student *get_student_address(int index);
         int get_students_size() const { return studentsEnrolledSize; }
+        void resize_student_list();
 
     private:
         std::string name;

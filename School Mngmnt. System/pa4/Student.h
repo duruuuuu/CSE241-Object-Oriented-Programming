@@ -14,36 +14,35 @@ namespace PA4
         // Constructors & Destructor
         Student();
         Student(const Student &copy);
-        Student(std::string n, int id);
-        Student(std::string n, int id, Course *courses);
-        Student(std::string n);
-        Student(int id);
+        Student(std::string n, std::string id);
+        Student(std::string n, std::string id, Course *courses);
         // Student(const Course &courses);
         ~Student();
 
         // Setter Functions
-        void set_name(std::string n);
-        void set_id(int id);
-        void set_name_id(std::string n, int id);
+        void set_name_id(std::string n, std::string id);
         void set_courses(const Course &courses);
 
         // Getter Functions
         std::string get_name() const;
-        int get_id() const;
-        Course *get_courses() const;
+        std::string get_id() const;
+        Course **get_courses() const;
         int get_course_size() const { return coursesTakenSize; }
 
         Student &operator=(const Student &other);
 
-        void add_course(const Course &newCourse);
-        Course get_course(int index);
+        void add_course(Course *newCourse);
+        Course get_course(int index) const;
+        void resize_course_list();
+
+        void delete_student(Student *toDelete);
 
     private:
         std::string name;
-        int ID;
+        std::string ID;
 
         //
-        Course *coursesTaken;
+        Course **coursesTaken;
         int coursesTakenSize;
         int coursesTakenCapacity;
     };

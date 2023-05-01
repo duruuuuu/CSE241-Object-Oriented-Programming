@@ -2,7 +2,6 @@
 #include "Course.h"
 #include "Student.h"
 
-const std::string SENT_VAL = "-999";
 const int INIT_CAPACITY = 10;
 
 namespace
@@ -16,6 +15,7 @@ namespace PA4
 
     Course::Course()
     {
+
         studentsEnrolledSize = 0;
         studentsEnrolledCapacity = INIT_CAPACITY;
         studentsEnrolled = new Student *[studentsEnrolledCapacity];
@@ -36,6 +36,7 @@ namespace PA4
     Course::Course(std::string n, std::string c)
         : name(n), code(c)
     {
+
         studentsEnrolledSize = 0;
         studentsEnrolledCapacity = INIT_CAPACITY;
         studentsEnrolled = new Student *[studentsEnrolledCapacity];
@@ -43,6 +44,7 @@ namespace PA4
 
     Course::~Course()
     {
+
         if (studentsEnrolled != NULL)
             delete[] studentsEnrolled;
     }
@@ -80,16 +82,56 @@ namespace PA4
 
     void Course::add_student(Student *newStudent)
     {
-        // TODO: Implement resize of capacity is reached
+        std::cout << "\nTEST\nStudents Enrolled Size: "
+                  << studentsEnrolledSize << std::endl;
+
         if (studentsEnrolledSize < studentsEnrolledCapacity)
         {
             studentsEnrolled[studentsEnrolledSize] = newStudent;
             studentsEnrolledSize++;
         }
+
+        else
+        {
+            resize_student_list();
+            studentsEnrolled[studentsEnrolledSize] = newStudent;
+            studentsEnrolledSize++;
+        }
+
+        std::cout << "New List:" << std::endl;
+        for (int i = 0; i < studentsEnrolledSize; i++)
+            std::cout << studentsEnrolled[i]->get_name() << std::endl;
+    }
+
+    void Course::resize_student_list()
+    {
+        studentsEnrolledCapacity *= 2;
+        Student **newList = new Student *[studentsEnrolledCapacity];
+
+        for (int i = 0; i < studentsEnrolledSize; i++)
+            newList[i] = studentsEnrolled[i];
+
+        delete[] studentsEnrolled;
+        studentsEnrolled = newList;
     }
 
     Student Course::get_student(int index) const
     {
-        return studentsEnrolled[0][index];
+        return *studentsEnrolled[index];
+    }
+
+    Student *Course::get_student_address(int index)
+    {
+        return studentsEnrolled[index];
+    }
+
+    void Course::set_student(Student *student, int index)
+    {
+        studentsEnrolled[index] = student;
+    }
+
+    void Course::set_students_size(int size)
+    {
+        studentsEnrolledSize = size;
     }
 }
