@@ -33,6 +33,7 @@ namespace PA4
 
         Course &operator=(const Course &other);
 
+        bool is_enrolled(Student *student) const;
         void add_student(Student *newStudent);
         Student get_student(int index) const;
         Student *get_student_address(int index);

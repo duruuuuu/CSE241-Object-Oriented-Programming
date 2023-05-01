@@ -134,4 +134,14 @@ namespace PA4
     {
         studentsEnrolledSize = size;
     }
+
+    bool Course::is_enrolled(Student *student) const
+    {
+        for (int i = 0; i < studentsEnrolledSize; ++i)
+        {
+            if (studentsEnrolled[i] == student)
+                return true;
+        }
+        return false;
+    }
 }
