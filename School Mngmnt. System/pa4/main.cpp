@@ -4,16 +4,10 @@
 #include "Course.h"
 #include "SchoolManagerSystem.h"
 
+using namespace PA4;
+
 int main()
 {
-    using namespace PA4;
-    // Student a;
-    // a.function1();
-    // Course b;
-    // b.function1();
-    // SchoolSystem c;
-    // c.function1();
-
     SchoolSystem schoolSystem;
     schoolSystem.run();
 }
