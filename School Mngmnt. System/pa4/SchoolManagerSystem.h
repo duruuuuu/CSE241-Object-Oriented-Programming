@@ -9,35 +9,10 @@ namespace PA4
     class SchoolSystem
     {
     public:
-        void function1();
+        void run(); // Function to start the System class
 
-        // Constructors & Destructor
-        SchoolSystem();
-        ~SchoolSystem();
-
-        void main_menu();
-        void student_menu();
-        void course_menu();
-        void select_student_menu();
-
-        void list_all_students();
-        void list_all_courses();
-
-        void add_student();
-        void delete_student(Student *toDelete);
-        void resize_student_list();
-        void resize_course_list();
-
-        Student *select_student(std::string id, std::string name);
-        bool add_student_to_course(Student *newStudent);
-
-        void add_course();
-        void select_course_menu();
-        Course *select_course(std::string code, std::string name);
-        void delete_course(Course *toDelete);
-        void run();
-        void list_students_in_course(const Course *select);
-        bool drop_student_from_course(Student *toDrop);
+        SchoolSystem();  // Default constructor
+        ~SchoolSystem(); // Destructor
 
     private:
         Course *courseList;      // Dynamically allocated array of courses
@@ -46,6 +21,29 @@ namespace PA4
         int courseListCapacity;  // Capactiy of course lis
         int studentListSize;     // Size of student list
         int studentListCapacity; // Capactiy of student list
+
+        void main_menu();
+        void student_menu();
+        void course_menu();
+
+        void select_student_menu();
+        void select_course_menu();
+
+        void add_student();
+        void delete_student(Student *toDelete);
+        void add_student_to_course(Student *newStudent);
+        void drop_student_from_course(Student *toDrop);
+        Student *select_student(std::string id, std::string name);
+        void resize_student_list();
+
+        void add_course();
+        void delete_course(Course *toDelete);
+        void list_students_in_course(const Course *select);
+        Course *select_course(std::string code, std::string name);
+        void resize_course_list();
+
+        void list_all_students();
+        void list_all_courses();
     };
 }
 
