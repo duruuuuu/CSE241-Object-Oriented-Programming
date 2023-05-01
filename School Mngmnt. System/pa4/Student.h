@@ -9,13 +9,13 @@ namespace PA4
     class Student
     {
     public:
-        // Constructors & Destructor
-        Student();
-        Student(const Student &copy);
-        Student(std::string n, std::string id);
-        Student(std::string n, std::string id, Course *courses);
-        // Student(const Course &courses);
-        ~Student();
+        Student();                                               // Default Constructor
+        Student(const Student &copy);                            // Copy Constructor
+        Student(std::string n, std::string id);                  // Constructor that takes name and ID
+        Student(std::string n, std::string id, Course *courses); // Constructor that takes all member data info
+        ~Student();                                              // Destructor
+
+        Student &operator=(const Student &other);
 
         // Setter Functions
         void set_name_id(std::string n, std::string id);
@@ -24,25 +24,24 @@ namespace PA4
         // Getter Functions
         std::string get_name() const;
         std::string get_id() const;
-        Course **get_courses() const;
         int get_course_size() const { return coursesTakenSize; }
-
-        Student &operator=(const Student &other);
+        Course **get_courses() const;
+        Course get_course(int index) const;
 
         void add_course(Course *newCourse);
         void drop_course(Course *toDrop);
-        Course get_course(int index) const;
-        void resize_course_list();
+
         bool is_enrolled(Course *course) const;
 
     private:
         std::string name;
         std::string ID;
 
-        //
         Course **coursesTaken;
         int coursesTakenSize;
         int coursesTakenCapacity;
+
+        void resize_course_list();
     };
 }
 
