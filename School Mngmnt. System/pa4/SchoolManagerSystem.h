@@ -28,16 +28,16 @@ namespace PA4
         void resize_student_list();
         void resize_course_list();
 
-        Student *select_student(std::string id);
+        Student *select_student(std::string id, std::string name);
         bool add_student_to_course(Student *newStudent);
 
         void add_course();
         void select_course_menu();
-        Course *select_course(std::string code);
+        Course *select_course(std::string code, std::string name);
         void delete_course(Course *toDelete);
         void run();
         void list_students_in_course(const Course *select);
-        void delete_student_from_course(Student *toDelete);
+        bool drop_student_from_course(Student *toDrop);
 
     private:
         Course *courseList;      // Dynamically allocated array of courses

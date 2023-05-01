@@ -26,7 +26,8 @@ namespace
             idPos++;
 
         // Extract the name substring from the input line
-        name = inputLine.substr(0, idPos - 1);
+        if (idPos != 0)
+            name = inputLine.substr(0, idPos - 1);
 
         // Extract ID substring from input line and convert to int
         idStr = inputLine.substr(idPos);
@@ -35,8 +36,6 @@ namespace
 
 namespace PA4
 {
-    void SchoolSystem::function1() { std::cout << "Hello System" << std::endl; }
-
     SchoolSystem::SchoolSystem()
     {
         courseListSize = 0;
@@ -178,6 +177,13 @@ namespace PA4
             }
         }
 
+        // If an ID or name was not entered
+        if (id.empty() || name.empty())
+        {
+            std::cout << "Please enter complete student information (Name, ID No.)" << std::endl;
+            return;
+        }
+
         // If the capactiy of the array is enough, add the student to the lsit
         if (studentListSize < studentListCapacity)
         {
@@ -220,7 +226,7 @@ namespace PA4
         parse_input_line_student(inputLine, name, id);
 
         // Find the student in the list and create a temporary object for it
-        Student *selectedStudent = select_student(id);
+        Student *selectedStudent = select_student(id, name);
 
         if (selectedStudent == nullptr)
             return;
@@ -230,6 +236,7 @@ namespace PA4
             std::cout << "\n0 UP" << std::endl;
             std::cout << "1 Delete Student" << std::endl;
             std::cout << "2 Add Selected Student to a Course" << std::endl;
+            std::cout << "3 Drop Selected Student from a Course" << std::endl;
 
             int choice;
             if (!(std::cin >> choice))
@@ -263,8 +270,9 @@ namespace PA4
                 }
                 break;
 
-                // case 3:
-                //  drop_student_from_course(selectedStudent);
+            case 3:
+                drop_student_from_course(selectedStudent);
+                break;
 
             default:
                 std::cout << "Please enter a valid input. SELECT STUDENT MENU" << std::endl;
@@ -275,14 +283,20 @@ namespace PA4
         return;
     }
 
-    Student *SchoolSystem::select_student(std::string id)
+    Student *SchoolSystem::select_student(std::string id, std::string name)
     {
         for (int i = 0; i < studentListSize; i++)
         {
             // If the ID and name are the same, return the student
             if (studentList[i].get_id() == id)
+            {
+                if (!name.empty() && name != studentList[i].get_name())
+                {
+                    std::cout << "Name does not match ID." << std::endl;
+                    return nullptr;
+                }
                 return &studentList[i];
-
+            }
             else
                 continue;
         }
@@ -358,54 +372,92 @@ namespace PA4
 
     void SchoolSystem::delete_student(Student *toDelete)
     {
+        // Delete student from any courses they are enrolled in
+        for (int i = 0; i < courseListSize; ++i)
+        {
+            if (courseList[i].is_enrolled(toDelete))
+                courseList[i].drop_student(toDelete);
+        }
+
         int i;
         for (i = 0; i < studentListSize; i++)
         {
-            if (studentList[i].get_name() == toDelete->get_name())
-            {
-                // If the ID and name are the same, return the student
-                if (studentList[i].get_id() == toDelete->get_id())
-                    break;
+            if (studentList[i].get_id() == toDelete->get_id())
+                break;
 
-                else
-                    continue;
-            }
+            else
+                continue;
         }
 
         // Shift all elements after index to the left
         for (int j = i; j < studentListSize - 1; j++)
-        {
             studentList[j] = studentList[j + 1];
-        }
 
         // Decrement size of array
         studentListSize--;
-
-        // Delete student from any courses they are enrolled in
-        delete_student_from_course(toDelete);
     }
 
-    void SchoolSystem::delete_student_from_course(Student *toDelete)
+    bool SchoolSystem::drop_student_from_course(Student *toDrop)
     {
-        for (int x = 0; x < courseListSize; x++)
+        int count = 0;          // Number of available classes
+        Course *selectedCourse; // Course that is selected by the user to add student to
+
+        std::cout << "\n0 UP" << std::endl;
+
+        // number of classes available and index tracker for available classes
+        for (int i = 0; i < courseListSize; i++)
         {
-            int i;
-            for (i = 0; i < courseList[x].get_students_size(); i++)
+            if (courseList[i].is_enrolled(toDrop))
             {
-                if (courseList[x].get_student(i).get_id() == toDelete->get_id())
-
-                    break;
-
-                else
-                    continue;
+                std::cout << count + 1 << " " << courseList[i].get_code()
+                          << " " << courseList[i].get_name() << std::endl;
+                count++;
             }
+        }
 
-            // Shift all elements after index to the left
-            for (int j = i; j < courseList[x].get_students_size() - 1; j++)
-                courseList[x].set_student(courseList[x].get_student_address(j), j + 1);
+        if (count == 0)
+        {
+            std::cout << "There are no available classes to take." << std::endl;
+            return false;
+        }
 
-            // Decrement size of array
-            courseList[x].set_students_size(courseList[x].get_students_size() - 1);
+        // users choice for course
+        int choice;
+        if (!(std::cin >> choice))
+        {
+            // Clearing the error flag and ignoring the invalid input
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            std::cout << "Please enter a valid input." << std::endl;
+            return false;
+        }
+
+        if (choice == 0)
+            return false;
+
+        else if (choice > count || choice < 0)
+        {
+            std::cout << "Invalid choice." << std::endl;
+            return false;
+        }
+        else
+        {
+            int availableCoursesIndex = 0;
+            for (int i = 0; i < courseListSize; i++)
+            {
+                if (courseList[i].is_enrolled(toDrop))
+                {
+                    availableCoursesIndex++;
+                    if (availableCoursesIndex == choice)
+                    {
+                        selectedCourse = &courseList[i];
+                        break;
+                    }
+                }
+            }
+            toDrop->drop_course(selectedCourse);
+            // selectedCourse->drop_student(toDrop);
+            return true;
         }
     }
 
@@ -460,6 +512,13 @@ namespace PA4
         std::getline(std::cin, inputLine);
         parse_input_line_course(inputLine, name, code);
 
+        // If the course information entered was incomplete
+        if (code.empty() || name.empty())
+        {
+            std::cout << "Please enter complete course information (Code, Name)" << std::endl;
+            return;
+        }
+
         // If the capactiy of the array is enough, add the student to the lsit
         if (courseListSize < courseListCapacity)
         {
@@ -501,7 +560,7 @@ namespace PA4
         parse_input_line_course(inputLine, name, code);
 
         // Find the course in the list and create a temporary object for it
-        Course *selectedCourse = select_course(code);
+        Course *selectedCourse = select_course(code, name);
 
         if (selectedCourse == nullptr)
             return;
@@ -549,12 +608,19 @@ namespace PA4
         return;
     }
 
-    Course *SchoolSystem::select_course(std::string code)
+    Course *SchoolSystem::select_course(std::string code, std::string name)
     {
         for (int i = 0; i < courseListSize; i++)
         {
             if (courseList[i].get_code() == code)
+            {
+                if (!name.empty() && name != studentList[i].get_name())
+                {
+                    std::cout << "Name does not match ID." << std::endl;
+                    return nullptr;
+                }
                 return &courseList[i];
+            }
         }
         std::cout << "Course Not Found" << std::endl;
         return nullptr;
@@ -562,6 +628,13 @@ namespace PA4
 
     void SchoolSystem::delete_course(Course *toDelete)
     {
+        // Delete course from any students who are enrolled in it
+        for (int i = 0; i < studentListSize; ++i)
+        {
+            if (studentList[i].is_enrolled(toDelete))
+                studentList[i].drop_course(toDelete);
+        }
+
         int i;
         for (i = 0; i < courseListSize; i++)
         {

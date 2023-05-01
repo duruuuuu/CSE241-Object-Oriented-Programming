@@ -9,8 +9,6 @@ namespace PA4
     class Student
     {
     public:
-        void function1();
-
         // Constructors & Destructor
         Student();
         Student(const Student &copy);
@@ -32,10 +30,10 @@ namespace PA4
         Student &operator=(const Student &other);
 
         void add_course(Course *newCourse);
+        void drop_course(Course *toDrop);
         Course get_course(int index) const;
         void resize_course_list();
-
-        void delete_student(Student *toDelete);
+        bool is_enrolled(Course *course) const;
 
     private:
         std::string name;

@@ -9,8 +9,6 @@ namespace PA4
     class Course
     {
     public:
-        void function1();
-
         // Constructors & Destructor
         Course();
         Course(const Course &copy);
@@ -35,6 +33,7 @@ namespace PA4
 
         bool is_enrolled(Student *student) const;
         void add_student(Student *newStudent);
+        void drop_student(Student *toDrop);
         Student get_student(int index) const;
         Student *get_student_address(int index);
         int get_students_size() const { return studentsEnrolledSize; }

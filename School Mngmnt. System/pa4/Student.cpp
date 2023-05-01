@@ -11,8 +11,6 @@ namespace
 
 namespace PA4
 {
-    void Student::function1() { std::cout << "Hello Student" << std::endl; }
-
     Student::Student()
     {
 
@@ -121,5 +119,32 @@ namespace PA4
     Course Student::get_course(int index) const
     {
         return *coursesTaken[index];
+    }
+
+    void Student::drop_course(Course *toDrop)
+    {
+        int i;
+        for (i = 0; i < coursesTakenSize; i++)
+        {
+            if (toDrop == coursesTaken[i])
+                break;
+        }
+
+        for (int j = i; j < coursesTakenSize - 1; j++)
+            coursesTaken[j] = coursesTaken[j + 1];
+
+        coursesTakenSize--;
+
+        toDrop->drop_student(this);
+    }
+
+    bool Student::is_enrolled(Course *course) const
+    {
+        for (int i = 0; i < coursesTakenSize; ++i)
+        {
+            if (coursesTaken[i] == course)
+                return true;
+        }
+        return false;
     }
 }

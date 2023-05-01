@@ -11,8 +11,6 @@ namespace
 
 namespace PA4
 {
-    void Course::function1() { std::cout << "Hello Course" << std::endl; }
-
     Course::Course()
     {
 
@@ -82,9 +80,6 @@ namespace PA4
 
     void Course::add_student(Student *newStudent)
     {
-        std::cout << "\nTEST\nStudents Enrolled Size: "
-                  << studentsEnrolledSize << std::endl;
-
         if (studentsEnrolledSize < studentsEnrolledCapacity)
         {
             studentsEnrolled[studentsEnrolledSize] = newStudent;
@@ -97,10 +92,6 @@ namespace PA4
             studentsEnrolled[studentsEnrolledSize] = newStudent;
             studentsEnrolledSize++;
         }
-
-        std::cout << "New List:" << std::endl;
-        for (int i = 0; i < studentsEnrolledSize; i++)
-            std::cout << studentsEnrolled[i]->get_name() << std::endl;
     }
 
     void Course::resize_student_list()
@@ -143,5 +134,20 @@ namespace PA4
                 return true;
         }
         return false;
+    }
+
+    void Course::drop_student(Student *toDrop)
+    {
+        int i;
+        for (i = 0; i < studentsEnrolledSize; i++)
+        {
+            if (toDrop == studentsEnrolled[i])
+                break;
+        }
+
+        for (int j = i; j < studentsEnrolledSize - 1; j++)
+            studentsEnrolled[j] = studentsEnrolled[j + 1];
+
+        studentsEnrolledSize--;
     }
 }
