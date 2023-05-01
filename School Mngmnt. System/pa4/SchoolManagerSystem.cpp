@@ -162,6 +162,22 @@ namespace PA4
         std::getline(std::cin, inputLine);
         parse_input_line_student(inputLine, name, id);
 
+        // Check if the student already exists or if an ID is duplicated
+        for (int i = 0; i < studentListSize; i++)
+        {
+            if (studentList[i].get_id() == id && studentList[i].get_name() == name)
+            {
+                std::cout << "This student already exists" << std::endl;
+                return;
+            }
+            else if (studentList[i].get_id() == id && studentList[i].get_name() != name)
+            {
+                std::cout
+                    << "A student with this ID already exists. Please enter a valid ID number." << std::endl;
+                return;
+            }
+        }
+
         // If the capactiy of the array is enough, add the student to the lsit
         if (studentListSize < studentListCapacity)
         {
@@ -204,7 +220,7 @@ namespace PA4
         parse_input_line_student(inputLine, name, id);
 
         // Find the student in the list and create a temporary object for it
-        Student *selectedStudent = select_student(name, id);
+        Student *selectedStudent = select_student(id);
 
         if (selectedStudent == nullptr)
             return;
@@ -259,20 +275,16 @@ namespace PA4
         return;
     }
 
-    Student *SchoolSystem::select_student(std::string name, std::string id)
+    Student *SchoolSystem::select_student(std::string id)
     {
-        // TODO SADECE ID KONTROL ET ID UNIQE OLSUN
         for (int i = 0; i < studentListSize; i++)
         {
-            if (studentList[i].get_name() == name)
-            {
-                // If the ID and name are the same, return the student
-                if (studentList[i].get_id() == id)
-                    return &studentList[i];
+            // If the ID and name are the same, return the student
+            if (studentList[i].get_id() == id)
+                return &studentList[i];
 
-                else
-                    continue;
-            }
+            else
+                continue;
         }
         std::cout << "Student Not Found" << std::endl;
         return nullptr;

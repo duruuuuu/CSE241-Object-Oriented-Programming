@@ -28,7 +28,7 @@ namespace PA4
         void resize_student_list();
         void resize_course_list();
 
-        Student *select_student(std::string name, std::string id);
+        Student *select_student(std::string id);
         bool add_student_to_course(Student *newStudent);
 
         void add_course();
