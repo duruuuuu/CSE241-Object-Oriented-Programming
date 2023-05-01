@@ -280,8 +280,9 @@ namespace PA4
 
     bool SchoolSystem::add_student_to_course(Student *newStudent)
     {
-        int count = 0;
-        Course *selectedCourse;
+        int count = 0;          // Number of available classes
+        Course *selectedCourse; // Course that is selected by the user to add student to
+
         std::cout << "\n0 UP" << std::endl;
 
         // number of classes available and index tracker for available classes
@@ -289,7 +290,8 @@ namespace PA4
         {
             if (!courseList[i].is_enrolled(newStudent))
             {
-                std::cout << count + 1 << courseList[i].get_name() << std::endl;
+                std::cout << count + 1 << " " << courseList[i].get_code()
+                          << " " << courseList[i].get_name() << std::endl;
                 count++;
             }
         }
