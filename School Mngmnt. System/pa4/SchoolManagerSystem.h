@@ -40,12 +40,12 @@ namespace PA4
         void delete_student_from_course(Student *toDelete);
 
     private:
-        Course *courseList;
-        Student *studentList;
-        int courseListSize;
-        int courseListCapacity;
-        int studentListSize;
-        int studentListCapacity;
+        Course *courseList;      // Dynamically allocated array of courses
+        Student *studentList;    // Dynamically allocated array of students
+        int courseListSize;      // Size of course list
+        int courseListCapacity;  // Capactiy of course lis
+        int studentListSize;     // Size of student list
+        int studentListCapacity; // Capactiy of student list
     };
 }
 
