@@ -1,0 +1,35 @@
+PUBLIC, PRIVATE, PROTECTED
+
+PUBLIC INHERITANCE (Is-A)
+Public: Everyone can access
+Private: Only self can access
+Protected: Derived classess can also access
+
+PROTECTED INHERINTANCE (not Is-A)
+Public: public base classes are protected in derived classes
+Protected: protected classes are protected in derived classes
+Private: no access by anyone
+
+PRIVATE (not is-a)
+Public: private in derived classes
+protected: private in derived classes 
+Private: no access by anyone
+
+WHAT DO DERIVED CLASSES NOT INHERIT?
+- Constructors
+- Destructors
+- Overloaded Assignment Operators
+- Friend Functions
+
+WHAT DO DERIVED CLASSES INHERIT?
+- Member Functions
+- Member Data
+
+!!! If you want to change the definition of a function from a base class in the derived class,
+    only then do you need to declare it in the class declaration
+
+VIRTUAL FUNCTIONS:
+- Redefined functions are bound statically 
+- overridden functions are bound dynamically
+- virtual functions are overridden
+- allows us to treat all objects generally as objects of the base class
