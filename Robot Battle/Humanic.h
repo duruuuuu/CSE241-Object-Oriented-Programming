@@ -3,6 +3,7 @@
 
 #include "Robot.h"
 
+// Abstract class derived from Robot class
 class Humanic : public Robot
 {
     friend class World;

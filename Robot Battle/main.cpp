@@ -13,7 +13,7 @@
 
 using namespace std;
 
-// const int WORLD_SIZE = 10;
+// const int WORLD_SIZE = 10; /*This is already declared globally  in World class */
 const int INIT_ROBOTS = 5;
 
 int main()
@@ -26,32 +26,32 @@ int main()
     // Creating robots
     int robotCount = 0;
 
-    // // Randomly place OPTIMUS PRIME robots
-    // while (robotCount < INIT_ROBOTS)
-    // {
-    //     int x = rand() % WORLD_SIZE;
-    //     int y = rand() % WORLD_SIZE;
+    // Randomly place OPTIMUS PRIME robots
+    while (robotCount < INIT_ROBOTS)
+    {
+        int x = rand() % WORLD_SIZE;
+        int y = rand() % WORLD_SIZE;
 
-    //     if (w.get_at(x, y) == NULL) // make sure ant is in an empty spot
-    //     {
-    //         robotCount++;
-    //         OptimusPrime *r1 = new OptimusPrime(&w, x, y, "optimusprime", robotCount);
-    //     }
-    // }
+        if (w.get_at(x, y) == NULL) // make sure ant is in an empty spot
+        {
+            robotCount++;
+            OptimusPrime *r1 = new OptimusPrime(&w, x, y, "optimusprime", robotCount);
+        }
+    }
 
-    // robotCount = 0;
-    // // Randomly place ROBOCOP robots
-    // while (robotCount < INIT_ROBOTS)
-    // {
-    //     int x = rand() % WORLD_SIZE;
-    //     int y = rand() % WORLD_SIZE;
+    robotCount = 0;
+    // Randomly place ROBOCOP robots
+    while (robotCount < INIT_ROBOTS)
+    {
+        int x = rand() % WORLD_SIZE;
+        int y = rand() % WORLD_SIZE;
 
-    //     if (w.get_at(x, y) == NULL) // make sure ant is in an empty spot
-    //     {
-    //         robotCount++;
-    //         Robocop *r2 = new Robocop(&w, x, y, "robocop", robotCount);
-    //     }
-    // }
+        if (w.get_at(x, y) == NULL) // make sure ant is in an empty spot
+        {
+            robotCount++;
+            Robocop *r2 = new Robocop(&w, x, y, "robocop", robotCount);
+        }
+    }
 
     robotCount = 0;
     // Randomly place ROOMBA robots
@@ -80,27 +80,14 @@ int main()
             Bulldozer *r4 = new Bulldozer(&w, x, y, "bullldozer", robotCount);
         }
     }
+
+    // Starting the simulation. Each robot will move ONCE in one turn (or it will not move at all if it dies first)
     string s;
     while (true)
     {
-        // w.display();
         w.simulate_one_turn();
         cout << endl
              << "Press enter for the next step" << endl;
         getline(cin, s);
-        /*
-        for (int i = 0; i < WORLD_SIZE; i++)
-        {
-            for (int j = 0; j < WORLD_SIZE; j++)
-            {
-                if (w.get_at(i, j) != NULL)
-                {
-                    cout << w.get_at(i, j)->get_type() << "\t\t" << w.get_at(i, j)->get_name()
-                         << "\t\tStrength: " << w.get_at(i, j)->get_strength()
-                         << "\t\tHitpoints: " << w.get_at(i, j)->get_hitpoints() << endl;
-                }
-            }
-        }
-        */
     }
 }

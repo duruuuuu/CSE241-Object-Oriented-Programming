@@ -4,6 +4,7 @@ using namespace std;
 class Robot;
 World::World()
 {
+    // Creating an empty world
     for (int i = 0; i < WORLD_SIZE; i++)
     {
         for (int j = 0; j < WORLD_SIZE; j++)
@@ -13,6 +14,7 @@ World::World()
 
 World::~World()
 {
+    // Destroying the world
     for (int i = 0; i < WORLD_SIZE; i++)
     {
         for (int j = 0; j < WORLD_SIZE; j++)
@@ -25,19 +27,23 @@ World::~World()
 
 Robot *World::get_at(int x, int y)
 {
+    // making sure we dont go ut of bounds and returning whatever is in the cell we want
     if ((x >= 0) && (x < WORLD_SIZE) && (y >= 0) && (y < WORLD_SIZE))
         return grid[x][y];
-    return NULL;
+    else
+        return NULL;
 }
 
 void World::set_at(int x, int y, Robot *mrRoboto)
-{ // Sets an organism to the indeces given in the parameter
+{
+    // Sets a robot to the indeces given in the parameter
     if ((x >= 0) && (x < WORLD_SIZE) && (y >= 0) && (y < WORLD_SIZE))
         grid[x][y] = mrRoboto;
 }
 
 void World::display()
 {
+    // Displays the world
     for (int i = 0; i < WORLD_SIZE; i++)
     {
         for (int j = 0; j < WORLD_SIZE; j++)
@@ -66,6 +72,7 @@ void World::display()
 void World::simulate_one_turn()
 {
     // Function to simulate one turn in the world.
+    // Every robot is moved in one turn (unless they die first)
 
     int i, j;
     // Reset all robots to not fought (moved) for this turn yet
@@ -87,17 +94,8 @@ void World::simulate_one_turn()
             {
                 if (grid[i][j]->fought == false)
                 {
-                    Robot *currRobot = grid[i][j];
-                    int x, y;
                     grid[i][j]->fought = true; // Mark as moved
-                    grid[i][j]->move();
-                    if (currRobot->alive == false)
-                    {
-                        findIndexes(&x, &y, currRobot);
-                        grid[x][y] = NULL;
-                        cout << "R died out of move fxn" << endl;
-                        delete currRobot;
-                    }
+                    grid[i][j]->move();        // Move the robot
                     sweep_grid();
                 }
             }
@@ -105,24 +103,8 @@ void World::simulate_one_turn()
     }
 }
 
-void World::findIndexes(int *x, int *y, Robot *rob)
-{
-    for (int i = 0; i < WORLD_SIZE; i++)
-    {
-        for (int j = 0; j < WORLD_SIZE; j++)
-        {
-            if (grid[i][j] == rob)
-            {
-                *x = i;
-                *y = j;
-                break;
-            }
-        }
-    }
-}
 void World::sweep_grid()
 {
-    cout << "Sweep grid" << endl;
     // Function checks the entire grid to see how many robots are left. If only one robot is left, the game ends
     int robotCount = 0;
     for (int i = 0; i < WORLD_SIZE; i++)
@@ -152,7 +134,8 @@ void World::sweep_grid()
         }
 
         std::cout << "THE WINNER IS: " << grid[i][j]->get_name() << std::endl;
-        exit(1);
+        delete grid[i][j]; // Delete the last Robot's pointer
+        exit(0);
     }
 
     else

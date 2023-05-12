@@ -17,13 +17,11 @@ class World
 public:
     World();
     ~World();
-    Robot *get_at(int x, int y);
-    void set_at(int x, int y, Robot *robot);
-    void display();
-    void simulate_one_turn();
-    void sweep_grid();
-    void fight(Robot *R, Robot *S);
-    void findIndexes(int *x, int *y, Robot *rob);
+    Robot *get_at(int x, int y);             // Function gets whats in a specific cell
+    void set_at(int x, int y, Robot *robot); // Sets a robot to a cell
+    void display();                          // prints the world
+    void simulate_one_turn();                // goes for one turn
+    void sweep_grid();                       // sweeps grid to count how many robots are left
 
 private:
     Robot *grid[WORLD_SIZE][WORLD_SIZE];

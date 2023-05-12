@@ -5,8 +5,10 @@
 #include <time.h>
 #include <cstdlib>
 
-Robocop::Robocop()
-    : Humanic{} {}
+Robocop::Robocop() // No args constructor inherited from Humanic
+    : Humanic{}
+{
+}
 
 Robocop::Robocop(World *world, int x, int y, std::string name, int num)
     : Humanic{world, x, y}
@@ -31,6 +33,7 @@ int Robocop::get_damage() const
     int d_r = rand() % strength;
     int tacticalNuke = rand() % tacticalNukeChance;
 
+    // Implementing tactical nuke if the chance comes
     if (tacticalNuke <= tacticalNukeChance)
         d_r += tacticalNukePoints;
 
