@@ -1,0 +1,68 @@
+Elemets of STL
+
+- Containers (Collection fo obejcts or primitive types)
+    - Array
+    - Vector
+    - Deque
+    - Stack
+    - Set
+    - Map
+
+- Algortihms (Functions for processing sequences of elements frmo containers)
+    - Find
+    - Max
+    - Count
+    - Accumulate
+    - Sort
+
+- Iterators (Generate sequences of element from containers)
+    - Forward
+    - Reverse
+    - By Value
+    - By Reference
+    - Constant
+
+
+TYPES OF CONTAINERS 
+
+Sequence Containers (Maintain the order of elements)
+    - Array
+    - Vector
+    - List 
+    - Forward_List
+    - Deque
+
+Associative Containers (Insert elements in a predefined order or no order at all)
+    - Set (cannot have any duplicates)
+    - Map (like a dictionary where a word is associated with its definition)
+
+Container Adapters (Variations of the other containers)
+        *Does not support algorithms
+
+
+TYPES OF ITERATORS
+Input Iterators - from the container to the Program
+Output Iterators - from the program to the container
+Forward Iterators - navigate one item at a time in one direction
+Bi-directional Iterators - navigate one item at a time both directions
+Random access Iterators - directly access a container item
+
+TYPES OF ALGORITHMS
+    - Non-modifying
+    - Modifying
+
+
+##############################################################################
+
+SETS:
+- no duplicates
+- ordered automatically
+
+
+MAPS:
+    - elements are stored as Key and Value pairs (std::pair)
+    - ordered by key 
+    - no duplicate elements (keys are unique)
+    - elements are accessed directly using the key
+
+
