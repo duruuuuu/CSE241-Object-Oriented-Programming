@@ -1,7 +1,7 @@
 #ifndef _CATALOGHANDLER_H_
 #define _CATALOGHANDLER_H_
 
-#include <map>
+#include <unordered_map>
 #include <algorithm>
 #include <string>
 #include <fstream>
@@ -77,40 +77,37 @@ public:
 
         string line, command;
         while (getline(commandsFile, line))
-        {
-            istringstream iss(line);
-            iss >> command;
-
-            if (command == "search")
-            {
-                // TODO UPDATE TO SUPPORT SEARCHING PHRASES NOT JUST WORDS!
-                string searchString, trash, field;
-                iss >> searchString >> trash >> field;
-
-                for (auto it = catalogList.begin(); it != catalogList.end(); it++)
-                {
-                    bool check = it->second.search(searchString, field);
-                    if (!check)
-                    {
-                        // TODO Write exception Command is Wrong
-                        cout << "Exception: command is wrong" << endl;
-                        cout << line << endl;
-                        break;
-                    }
-                }
-            }
-            else if (command == "sort")
-            {
-                string field;
-                iss >> field;
-                // sort_by_field(field);
-            }
-        }
+            run_command(line);
     }
 
 private:
-    string catalogType;         // stores the type of catalog (Book, Movie, or Music)
-    map<string, T> catalogList; // Map template to configure the list for whatever the catalog type is
+    string catalogType;                   // stores the type of catalog (Book, Movie, or Music)
+    unordered_map<string, T> catalogList; // Map template to configure the list for whatever the catalog type is
+
+    bool count_fields(const string &line)
+    {
+        char target = '\"';
+        int oCount = count(line.begin(), line.end(), target);
+
+        if (catalogType == "book" || catalogType == "music")
+        {
+            if (oCount == 8)
+                return true;
+            else
+                return false;
+        }
+
+        else if (catalogType == "movie")
+        {
+            if (oCount == 10)
+                return true;
+            else
+                return false;
+        }
+
+        else
+            return false;
+    }
 
     /**
      * @brief Stores the catalog entry in the CatalogHandler's system
@@ -121,6 +118,10 @@ private:
     {
         try
         {
+            bool fieldCount = count_fields(line);
+            if (!fieldCount)
+                throw MissingField(line);
+
             string title;
             istringstream iss(line);
             getline(iss, title, '\"');
@@ -136,6 +137,88 @@ private:
             e.what(output);
             output.close();
         }
+        catch (MissingField e)
+        {
+            ofstream output("output.txt", std::ios::app);
+            e.what(output);
+            output.close();
+        }
+    }
+
+    /**
+     * @brief Implementing the commands read from file
+     * @param line Reference to the line of command read from the file
+     * @exception Invalid field type
+     */
+    void run_command(const string &line)
+    {
+        try
+        {
+            istringstream iss(line);
+            string command;
+            iss >> command;
+
+            if (command == "search")
+            {
+                string searchStr, searchField;
+                // Getting the string to be searched
+                getline(iss, searchStr, '\"');
+                getline(iss, searchStr, '\"');
+                // Getting field to be searched in
+                getline(iss, searchField, '\"');
+                getline(iss, searchField, '\"');
+
+                for (auto it = catalogList.begin(); it != catalogList.end(); it++)
+                {
+                    bool check = it->second.search(searchStr, searchField);
+                    if (!check)
+                        throw WrongCommand(line);
+                }
+            }
+            else if (command == "sort")
+            {
+                // extracting the field that will be sorted
+                string field;
+                getline(iss, field, '\"');
+                getline(iss, field, '\"');
+
+                sort_by_field(field);
+
+                for (const auto &item : catalogList)
+                    item.second.print_all();
+            }
+        }
+
+        catch (WrongCommand e)
+        {
+            ofstream output("output.txt", std::ios::app);
+            e.what(output);
+            output.close();
+        }
+    }
+
+    void sort_by_field(const string &field)
+    {
+        ofstream output("output.txt", std::ios::app);
+        output << "sort by \"" << field << "\"" << endl;
+        output.close();
+
+        auto compareFunc = [field](const T &item1, const T &item2)
+        {
+            return item1.get_compare_func(field)(item1, item2);
+        };
+
+        // Iterate over the map and copy the values to the array
+        std::vector<T> tempVec;
+        for (const auto &pair : catalogList)
+            tempVec.push_back(pair.second);
+        tempVec.erase(tempVec.begin());
+
+        sort(tempVec.begin(), tempVec.end(), compareFunc);
+
+        catalogList.clear();
+        for (const auto &item : tempVec)
+            catalogList[item.title] = item;
     }
 };
 

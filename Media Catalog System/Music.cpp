@@ -1,21 +1,4 @@
 #include "Music.h"
-#include "Exceptions.h"
-#include <string>
-#include <sstream>
-#include <vector>
-#include <iostream>
-#include <regex>
-#include <fstream>
-
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::getline;
-using std::istringstream;
-using std::regex;
-using std::regex_search;
-using std::string;
-using std::vector;
 
 Music::Music()
 {
@@ -29,33 +12,17 @@ Music::Music(string t, string a, string y, string g)
 
 Music::Music(string line)
 {
-    try
-    {
-        vector<string> parsedItems;
-        istringstream iss(line);
-        string item;
+    vector<string> parsedItems;
+    istringstream iss(line);
+    string item;
 
-        while (getline(iss, item, '\"'))
-            parsedItems.push_back(item);
+    while (getline(iss, item, '\"'))
+        parsedItems.push_back(item);
 
-        if (parsedItems.size() < 7)
-            throw MissingField(line);
-
-        title = parsedItems[1];
-        artists = parsedItems[3];
-        year = parsedItems[5];
-        genre = parsedItems[7];
-    }
-    catch (MissingField e)
-    {
-        std::ofstream output("output.txt", std::ios::app);
-
-        e.what(output);
-
-        output.close();
-
-        return;
-    }
+    title = parsedItems[1];
+    artists = parsedItems[3];
+    year = parsedItems[5];
+    genre = parsedItems[7];
 }
 
 string Music::get_title() const { return title; }
@@ -91,9 +58,6 @@ void Music::print_all() const
 template <typename Field>
 bool Music::search_substr(string &str, Field field, string &fieldStr)
 {
-    // Erasing the double quotes from the search keyword
-    str.erase(str.begin());
-    str.erase(str.end() - 1);
 
     regex pattern(str);
     bool match = regex_search(field, pattern);
@@ -103,7 +67,7 @@ bool Music::search_substr(string &str, Field field, string &fieldStr)
         std::ofstream output("output.txt", std::ios::app);
         if (output.is_open())
         {
-            output << "search \"" << str << "\" in " << fieldStr << endl;
+            output << "search \"" << str << "\" in \"" << fieldStr << "\"" << endl;
             output.close();
         }
         print_all();
@@ -113,16 +77,16 @@ bool Music::search_substr(string &str, Field field, string &fieldStr)
 
 bool Music::search(string str, string field)
 {
-    if (field == "\"title\"")
+    if (field == "title")
         return search_substr(str, title, field);
 
-    else if (field == "\"year\"")
+    else if (field == "year")
         return search_substr(str, year, field);
 
-    else if (field == "\"artists\"")
+    else if (field == "artists")
         return search_substr(str, artists, field);
 
-    else if (field == "\"genre\"")
+    else if (field == "genre")
         return search_substr(str, genre, field);
 
     // TODO HANDLE WRONG COMMAND EXCEPTION
@@ -130,7 +94,21 @@ bool Music::search(string str, string field)
         return false;
 }
 
-void Music::sort(string field)
+std::function<bool(const Music &, const Music &)> Music::get_compare_func(const string &field) const
 {
-    cout << "sorting...";
+    if (field == "title")
+        return &compare_by_title;
+
+    else if (field == "artists")
+        return &compare_by_artists;
+
+    else if (field == "year")
+        return &compare_by_year;
+
+    else if (field == "genre")
+        return &compare_by_genre;
+
+    // Default comaprison function if field is not recognized
+    else
+        return &compare_by_title;
 }

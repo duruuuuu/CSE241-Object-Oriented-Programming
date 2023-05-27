@@ -1,9 +1,15 @@
 #ifndef _MOVIE_H_
 #define _MOVIE_H_
 
+#include "Exceptions.h"
 #include <string>
+#include <sstream>
+#include <vector>
+#include <iostream>
+#include <regex>
+#include <fstream>
 
-using std::string;
+using namespace std;
 
 class Movie
 {
@@ -16,21 +22,24 @@ public:
     Movie(string line);
 
     // Getter functions
-    string get_title() const;
-    string get_year() const;
-    string get_director() const;
-    string get_genre() const;
-    string get_starring() const;
+    string get_title() const { return title; }
+    string get_year() const { return year; }
+    string get_director() const { return director; }
+    string get_genre() const { return genre; }
+    string get_starring() const { return starring; }
 
     // Setter functions
-    void set_title(string s);
-    void set_year(string s);
-    void set_director(string s);
-    void set_genre(string s);
-    void set_starring(string s);
+    void set_title(string s) { title = s; }
+    void set_year(string s) { year = s; }
+    void set_director(string s) { director = s; }
+    void set_genre(string s) { genre = s; }
+    void set_starring(string s) { starring = s; }
 
     bool search(string str, string field);
-    void sort(string field);
+
+    std::function<bool(const Movie &, const Movie &)> get_compare_func(const string &field) const;
+
+    void print_all() const;
 
 private:
     string title;
@@ -42,7 +51,6 @@ private:
     /**
      * @brief Prints all the information about the movie
      */
-    void print_all() const;
 
     /**
      * @brief Looks for a substring in a string.
@@ -53,6 +61,27 @@ private:
      */
     template <typename Field>
     bool search_substr(string &str, Field field, string &fieldStr);
+
+    static bool compare_by_title(const Movie &movie1, const Movie &movie2)
+    {
+        return movie1.title > movie2.title;
+    }
+    static bool compare_by_director(const Movie &movie1, const Movie &movie2)
+    {
+        return movie1.director > movie2.director;
+    }
+    static bool compare_by_year(const Movie &movie1, const Movie &movie2)
+    {
+        return movie1.year > movie2.year;
+    }
+    static bool compare_by_genre(const Movie &movie1, const Movie &movie2)
+    {
+        return movie1.genre > movie2.genre;
+    }
+    static bool compare_by_starring(const Movie &movie1, const Movie &movie2)
+    {
+        return movie1.starring > movie2.starring;
+    }
 };
 
 #endif //_MOVIE_H_

@@ -1,21 +1,4 @@
 #include "Movie.h"
-#include "Exceptions.h"
-#include <string>
-#include <sstream>
-#include <vector>
-#include <iostream>
-#include <regex>
-#include <fstream>
-
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::getline;
-using std::istringstream;
-using std::regex;
-using std::regex_search;
-using std::string;
-using std::vector;
 
 Movie::Movie()
 {
@@ -30,56 +13,19 @@ Movie::Movie(string ti, string d, string y, string g, string s)
 
 Movie::Movie(string line)
 {
-    try
-    {
-        vector<string> parsedItems;
-        istringstream iss(line);
-        string item;
+    vector<string> parsedItems;
+    istringstream iss(line);
+    string item;
 
-        while (getline(iss, item, '\"'))
-            parsedItems.push_back(item);
+    while (getline(iss, item, '\"'))
+        parsedItems.push_back(item);
 
-        if (parsedItems.size() < 9)
-            throw MissingField(line);
-
-        title = parsedItems[1];
-        director = parsedItems[3];
-        year = parsedItems[5];
-        genre = parsedItems[7];
-        starring = parsedItems[9];
-    }
-
-    catch (MissingField e)
-    {
-        std::ofstream output("output.txt", std::ios::app);
-
-        e.what(output);
-
-        output.close();
-
-        return;
-    }
+    title = parsedItems[1];
+    director = parsedItems[3];
+    year = parsedItems[5];
+    genre = parsedItems[7];
+    starring = parsedItems[9];
 }
-
-string Movie::get_title() const { return title; }
-
-string Movie::get_year() const { return year; }
-
-string Movie::get_director() const { return director; }
-
-string Movie::get_genre() const { return genre; }
-
-string Movie::get_starring() const { return starring; }
-
-void Movie::set_title(string s) { title = s; }
-
-void Movie::set_year(string s) { year = s; }
-
-void Movie::set_director(string s) { director = s; }
-
-void Movie::set_genre(string s) { genre = s; }
-
-void Movie::set_starring(string s) { starring = s; }
 
 void Movie::print_all() const
 {
@@ -101,10 +47,6 @@ void Movie::print_all() const
 template <typename Field>
 bool Movie::search_substr(string &str, Field field, string &fieldStr)
 {
-    // Erasing the double quotes from the search keyword
-    str.erase(str.begin());
-    str.erase(str.end() - 1);
-
     regex pattern(str);
     bool match = regex_search(field, pattern);
 
@@ -113,7 +55,7 @@ bool Movie::search_substr(string &str, Field field, string &fieldStr)
         std::ofstream output("output.txt", std::ios::app);
         if (output.is_open())
         {
-            output << "search \"" << str << "\" in " << fieldStr << endl;
+            output << "search \"" << str << "\" in \"" << fieldStr << "\"" << endl;
             output.close();
         }
         print_all();
@@ -123,19 +65,19 @@ bool Movie::search_substr(string &str, Field field, string &fieldStr)
 
 bool Movie::search(string str, string field)
 {
-    if (field == "\"title\"")
+    if (field == "title")
         return search_substr(str, title, field);
 
-    else if (field == "\"year\"")
+    else if (field == "year")
         return search_substr(str, year, field);
 
-    else if (field == "\"director\"")
+    else if (field == "director")
         return search_substr(str, director, field);
 
-    else if (field == "\"genre\"")
+    else if (field == "genre")
         return search_substr(str, genre, field);
 
-    else if (field == "\"starring\"")
+    else if (field == "starring")
         return search_substr(str, starring, field);
 
     // TODO HANDLE WRONG COMMAND EXCEPTION
@@ -143,7 +85,24 @@ bool Movie::search(string str, string field)
         return false;
 }
 
-void Movie::sort(string field)
+std::function<bool(const Movie &, const Movie &)> Movie::get_compare_func(const string &field) const
 {
-    cout << "sorting...";
+    if (field == "title")
+        return &compare_by_title;
+
+    else if (field == "director")
+        return &compare_by_director;
+
+    else if (field == "year")
+        return &compare_by_year;
+
+    else if (field == "genre")
+        return &compare_by_genre;
+
+    else if (field == "starring")
+        return &compare_by_starring;
+
+    // Default comaprison function if field is not recognized
+    else
+        return &compare_by_title;
 }

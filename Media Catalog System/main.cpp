@@ -7,8 +7,6 @@
 #include <iostream>
 #include <vector>
 
-using namespace std;
-
 int main()
 {
 
@@ -36,7 +34,6 @@ int main()
     {
         CatalogHandler<Book> catalogHandler;
 
-        // TODO Create a function for this part
         catalogHandler.catalog_read();
         catalogHandler.read_commands();
     }

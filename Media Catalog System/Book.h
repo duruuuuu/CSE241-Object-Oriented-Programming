@@ -1,9 +1,15 @@
 #ifndef _BOOK_H_
 #define _BOOK_H_
 
+#include "Exceptions.h"
 #include <string>
+#include <sstream>
+#include <vector>
+#include <iostream>
+#include <regex>
+#include <fstream>
 
-using std::string;
+using namespace std;
 
 class Book
 {
@@ -32,7 +38,8 @@ public:
      * @param field the field that the keyword is being searched in
      */
     bool search(string str, string field);
-    void sort(string field);
+
+    std::function<bool(const Book &, const Book &)> get_compare_func(const string &field) const;
 
 private:
     string title;
@@ -54,6 +61,23 @@ private:
      */
     template <typename Field>
     bool search_substr(string &str, Field field, string &fieldStr);
+
+    static bool compare_by_title(const Book &Book1, const Book &Book2)
+    {
+        return Book1.title > Book2.title;
+    }
+    static bool compare_by_author(const Book &Book1, const Book &Book2)
+    {
+        return Book1.authors > Book2.authors;
+    }
+    static bool compare_by_year(const Book &Book1, const Book &Book2)
+    {
+        return Book1.year > Book2.year;
+    }
+    static bool compare_by_tags(const Book &Book1, const Book &Book2)
+    {
+        return Book1.tags > Book2.tags;
+    }
 };
 
 #endif //_BOOK_H_

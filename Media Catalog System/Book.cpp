@@ -1,21 +1,4 @@
 #include "Book.h"
-#include "Exceptions.h"
-#include <string>
-#include <sstream>
-#include <vector>
-#include <iostream>
-#include <regex>
-#include <fstream>
-
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::getline;
-using std::istringstream;
-using std::regex;
-using std::regex_search;
-using std::string;
-using std::vector;
 
 Book::Book()
 {
@@ -24,54 +7,21 @@ Book::Book()
 
 Book::Book(string line)
 {
-    try
+    vector<string> parsedItems;
+    istringstream iss(line);
+    string item;
+
+    while (getline(iss, item, '\"'))
     {
-        vector<string> parsedItems;
-        istringstream iss(line);
-        string item;
-
-        while (getline(iss, item, '\"'))
-        {
-            // cout << "ITEM: " << item << endl;
-            parsedItems.push_back(item);
-        }
-
-        if (parsedItems.size() < 7)
-            throw MissingField(line);
-
-        title = parsedItems[1];
-        authors = parsedItems[3];
-        year = parsedItems[5];
-        tags = parsedItems[7];
+        // cout << "ITEM: " << item << endl;
+        parsedItems.push_back(item);
     }
 
-    catch (MissingField e)
-    {
-        std::ofstream output("output.txt", std::ios::app);
-
-        e.what(output);
-
-        output.close();
-
-        return;
-    }
+    title = parsedItems[1];
+    authors = parsedItems[3];
+    year = parsedItems[5];
+    tags = parsedItems[7];
 }
-
-string Book::get_title() const { return title; }
-
-string Book::get_year() const { return year; }
-
-string Book::get_authors() const { return authors; }
-
-string Book::get_tags() const { return tags; }
-
-void Book::set_title(string s) { title = s; }
-
-void Book::set_year(string s) { year = s; }
-
-void Book::set_authors(string s) { authors = s; }
-
-void Book::set_tags(string s) { tags = s; }
 
 void Book::print_all() const
 {
@@ -92,10 +42,6 @@ void Book::print_all() const
 template <typename Field>
 bool Book::search_substr(string &str, Field field, string &fieldStr)
 {
-    // Erasing the double quotes from the search keyword
-    str.erase(str.begin());
-    str.erase(str.end() - 1);
-
     regex pattern(str);
     bool match = regex_search(field, pattern);
 
@@ -104,7 +50,7 @@ bool Book::search_substr(string &str, Field field, string &fieldStr)
         std::ofstream output("output.txt", std::ios::app);
         if (output.is_open())
         {
-            output << "search \"" << str << "\" in " << fieldStr << endl;
+            output << "search \"" << str << "\" in \"" << fieldStr << "\"" << endl;
             output.close();
         }
         print_all();
@@ -114,16 +60,16 @@ bool Book::search_substr(string &str, Field field, string &fieldStr)
 
 bool Book::search(string str, string field)
 {
-    if (field == "\"title\"")
+    if (field == "title")
         return search_substr(str, title, field);
 
-    else if (field == "\"year\"")
+    else if (field == "year")
         return search_substr(str, year, field);
 
-    else if (field == "\"authors\"")
+    else if (field == "authors")
         return search_substr(str, authors, field);
 
-    else if (field == "\"tags\"")
+    else if (field == "tags")
         return search_substr(str, tags, field);
 
     // TODO HANDLE WRONG COMMAND EXCEPTION
@@ -131,7 +77,21 @@ bool Book::search(string str, string field)
         return false;
 }
 
-void Book::sort(string field)
+std::function<bool(const Book &, const Book &)> Book::get_compare_func(const string &field) const
 {
-    cout << "sorting...";
+    if (field == "title")
+        return &compare_by_title;
+
+    else if (field == "authors")
+        return &compare_by_author;
+
+    else if (field == "year")
+        return &compare_by_year;
+
+    else if (field == "tags")
+        return &compare_by_tags;
+
+    // Default comaprison function if field is not recognized
+    else
+        return &compare_by_title;
 }
