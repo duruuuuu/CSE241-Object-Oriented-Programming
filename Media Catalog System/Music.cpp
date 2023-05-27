@@ -1,4 +1,5 @@
 #include "Music.h"
+#include "Exceptions.h"
 #include <string>
 #include <sstream>
 #include <vector>
@@ -28,25 +29,33 @@ Music::Music(string t, string a, string y, string g)
 
 Music::Music(string line)
 {
-    vector<string> parsedItems;
-    istringstream iss(line);
-    string item;
-
-    while (getline(iss, item, '\"'))
-        parsedItems.push_back(item);
-
-    // TODO IMPLEMENT EXCEPTION MISSING FIELD
-    if (parsedItems.size() < 7)
+    try
     {
-        cerr << "Missing Field" << endl;
-        cout << line << endl;
+        vector<string> parsedItems;
+        istringstream iss(line);
+        string item;
+
+        while (getline(iss, item, '\"'))
+            parsedItems.push_back(item);
+
+        if (parsedItems.size() < 7)
+            throw MissingField(line);
+
+        title = parsedItems[1];
+        artists = parsedItems[3];
+        year = parsedItems[5];
+        genre = parsedItems[7];
+    }
+    catch (MissingField e)
+    {
+        std::ofstream output("output.txt", std::ios::app);
+
+        e.what(output);
+
+        output.close();
+
         return;
     }
-
-    title = parsedItems[1];
-    artists = parsedItems[3];
-    year = parsedItems[5];
-    genre = parsedItems[7];
 }
 
 string Music::get_title() const { return title; }

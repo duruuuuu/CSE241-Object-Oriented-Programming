@@ -1,4 +1,5 @@
 #include "Book.h"
+#include "Exceptions.h"
 #include <string>
 #include <sstream>
 #include <vector>
@@ -21,37 +22,39 @@ Book::Book()
     // Intentionally left empty
 }
 
-Book::Book(string ti, string a, string y, string ta)
-    : title(ti), authors(a), year(y), tags(ta)
-{
-    // Intentionally left empty
-}
-
 Book::Book(string line)
 {
-    // Constructor that takes a line of data and parses it to create an entry
-    vector<string> parsedItems;
-    istringstream iss(line);
-    string item;
-
-    while (getline(iss, item, '\"'))
+    try
     {
-        // cout << "ITEM: " << item << endl;
-        parsedItems.push_back(item);
+        vector<string> parsedItems;
+        istringstream iss(line);
+        string item;
+
+        while (getline(iss, item, '\"'))
+        {
+            // cout << "ITEM: " << item << endl;
+            parsedItems.push_back(item);
+        }
+
+        if (parsedItems.size() < 7)
+            throw MissingField(line);
+
+        title = parsedItems[1];
+        authors = parsedItems[3];
+        year = parsedItems[5];
+        tags = parsedItems[7];
     }
 
-    // TODO IMPLEMENT EXCEPTION MISSING FIELD
-    if (parsedItems.size() < 7)
+    catch (MissingField e)
     {
-        cerr << "Missing Field" << endl;
-        cout << line << endl;
+        std::ofstream output("output.txt", std::ios::app);
+
+        e.what(output);
+
+        output.close();
+
         return;
     }
-
-    title = parsedItems[1];
-    authors = parsedItems[3];
-    year = parsedItems[5];
-    tags = parsedItems[7];
 }
 
 string Book::get_title() const { return title; }

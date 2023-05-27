@@ -1,4 +1,5 @@
 #include "Movie.h"
+#include "Exceptions.h"
 #include <string>
 #include <sstream>
 #include <vector>
@@ -29,26 +30,35 @@ Movie::Movie(string ti, string d, string y, string g, string s)
 
 Movie::Movie(string line)
 {
-    vector<string> parsedItems;
-    istringstream iss(line);
-    string item;
-
-    while (getline(iss, item, '\"'))
-        parsedItems.push_back(item);
-
-    // TODO IMPLEMENT EXCEPTION MISSING FIELD
-    if (parsedItems.size() < 9)
+    try
     {
-        cerr << "Missing Field" << endl;
-        cout << line << endl;
-        return;
+        vector<string> parsedItems;
+        istringstream iss(line);
+        string item;
+
+        while (getline(iss, item, '\"'))
+            parsedItems.push_back(item);
+
+        if (parsedItems.size() < 9)
+            throw MissingField(line);
+
+        title = parsedItems[1];
+        director = parsedItems[3];
+        year = parsedItems[5];
+        genre = parsedItems[7];
+        starring = parsedItems[9];
     }
 
-    title = parsedItems[1];
-    director = parsedItems[3];
-    year = parsedItems[5];
-    genre = parsedItems[7];
-    starring = parsedItems[9];
+    catch (MissingField e)
+    {
+        std::ofstream output("output.txt", std::ios::app);
+
+        e.what(output);
+
+        output.close();
+
+        return;
+    }
 }
 
 string Movie::get_title() const { return title; }

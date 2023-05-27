@@ -1,7 +1,7 @@
 #ifndef _CATALOGHANDLER_H_
 #define _CATALOGHANDLER_H_
 
-#include <unordered_map>
+#include <map>
 #include <algorithm>
 #include <string>
 #include <fstream>
@@ -13,6 +13,7 @@
 #include "Book.h"
 #include "Music.h"
 #include "Movie.h"
+#include "Exceptions.h"
 
 using namespace std;
 
@@ -48,31 +49,25 @@ public:
         }
 
         // Parsing the lines and storing them in the map
-        string line, title;
+        string line;
         getline(dataFile, line);
         catalogType = line;
         while (getline(dataFile, line))
-        {
-            istringstream iss(line);
-            getline(iss, title, '\"');
-            getline(iss, title, '\"');
+            store_line(line);
 
-            // TODO IMPLEMENT DUPLICATE ENTRY EXCEPTION
-            if (catalogList.count(title) > 0)
-            {
-                cout << "Duplicate entry detected: " << title << endl;
-                continue;
-            }
-            catalogList[title] = T(line);
-        }
+        ofstream output("output.txt", std::ios::app);
+        output << catalogList.size() - 1 << " unique entries" << endl;
+        output.close();
         dataFile.close();
     }
 
     /**
-     * @brief Excecutes commands from file and
+     * @
+     * @brief Excecutes commands from file and writes results to output file
      */
     void read_commands()
     {
+        // TODO create exception for fiel not opening
         ifstream commandsFile("commands.txt");
         if (!commandsFile)
         {
@@ -114,8 +109,34 @@ public:
     }
 
 private:
-    string catalogType;                   // stores the type of catalog (Book, Movie, or Music)
-    unordered_map<string, T> catalogList; // Map template to configure the list for whatever the catalog type is
+    string catalogType;         // stores the type of catalog (Book, Movie, or Music)
+    map<string, T> catalogList; // Map template to configure the list for whatever the catalog type is
+
+    /**
+     * @brief Stores the catalog entry in the CatalogHandler's system
+     * @param line Reference to the entry line read from the file
+     * @exception Duplicate entry or missing fields in entry
+     */
+    void store_line(const string &line)
+    {
+        try
+        {
+            string title;
+            istringstream iss(line);
+            getline(iss, title, '\"');
+            getline(iss, title, '\"');
+            if (catalogList.count(title) > 0)
+                throw DuplicateEntry(line);
+
+            catalogList[title] = T(line);
+        }
+        catch (DuplicateEntry e)
+        {
+            ofstream output("output.txt", std::ios::app);
+            e.what(output);
+            output.close();
+        }
+    }
 };
 
 #endif // _CATALOGHANDLER_H_

@@ -12,8 +12,7 @@ public:
     friend class CatalogHandler;
 
     Book();
-    Book(string ti, string a, string y, string ta);
-    Book(string line);
+    Book(string line); // Constructor that takes a line of data and parses it to create an entry
 
     // Getter functions
     string get_title() const;
