@@ -5,12 +5,6 @@ Movie::Movie()
     // Intentionally left blank
 }
 
-Movie::Movie(string ti, string d, string y, string g, string s)
-    : title(ti), director(d), year(y), genre(g), starring(s)
-{
-    // Intentionally left blank
-}
-
 Movie::Movie(string line)
 {
     vector<string> parsedItems;
@@ -80,7 +74,6 @@ bool Movie::search(string str, string field)
     else if (field == "starring")
         return search_substr(str, starring, field);
 
-    // TODO HANDLE WRONG COMMAND EXCEPTION
     else
         return false;
 }
@@ -102,7 +95,7 @@ std::function<bool(const Movie &, const Movie &)> Movie::get_compare_func(const 
     else if (field == "starring")
         return &compare_by_starring;
 
-    // Default comaprison function if field is not recognized
+    // Exception is handled outside of the dunctoin, this else statement is used only to satisfy the return of the function
     else
         return &compare_by_title;
 }

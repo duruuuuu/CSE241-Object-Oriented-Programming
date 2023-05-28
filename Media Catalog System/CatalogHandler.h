@@ -40,50 +40,70 @@ public:
      */
     void catalog_read()
     {
-        // Opening the file and making sure it is opened succesfully
-        ifstream dataFile("data.txt");
-        if (!dataFile)
+        try
         {
-            cerr << "File Failed to Open" << endl;
-            exit(1);
+            // Opening the file and making sure it is opened succesfully
+            ifstream dataFile("data.txt");
+            if (!dataFile)
+            {
+                cerr << "File Failed to Open" << endl;
+                throw FileFail();
+            }
+
+            // Parsing the lines
+            string line;
+            getline(dataFile, line);
+            catalogType = line;
+            // Storing data line-by-line
+            while (getline(dataFile, line))
+                store_line(line);
+
+            // Printing the number of unique entries to the output file
+            ofstream output("output.txt", std::ios::app);
+            output << catalogList.size() << " unique entries" << endl;
+            output.close();
+            dataFile.close();
         }
-
-        // Parsing the lines and storing them in the map
-        string line;
-        getline(dataFile, line);
-        catalogType = line;
-        while (getline(dataFile, line))
-            store_line(line);
-
-        ofstream output("output.txt", std::ios::app);
-        output << catalogList.size() - 1 << " unique entries" << endl;
-        output.close();
-        dataFile.close();
+        catch (FileFail e)
+        {
+            e.what();
+        }
     }
 
     /**
-     * @
      * @brief Excecutes commands from file and writes results to output file
      */
     void read_commands()
     {
-        // TODO create exception for fiel not opening
-        ifstream commandsFile("commands.txt");
-        if (!commandsFile)
+        try
         {
-            cerr << "File Failed to Open" << endl;
-            exit(1);
-        }
+            ifstream commandsFile("commands.txt");
+            if (!commandsFile)
+            {
+                cerr << "File Failed to Open" << endl;
+                throw FileFail();
+            }
 
-        string line, command;
-        while (getline(commandsFile, line))
-            run_command(line);
+            // If the file is opened successfully, run the commands line-by-line
+            string line, command;
+            while (getline(commandsFile, line))
+                run_command(line);
+        }
+        catch (FileFail e)
+        {
+            e.what();
+        }
     }
 
 private:
     string catalogType;                   // stores the type of catalog (Book, Movie, or Music)
     unordered_map<string, T> catalogList; // Map template to configure the list for whatever the catalog type is
 
+    /**
+     * @brief Function to count the number of fields in an entry
+     * @param line Reference to the string line of entry
+     * @return true if the field count is right for its categroy, false if not
+     */
     bool count_fields(const string &line)
     {
         char target = '\"';
@@ -122,6 +142,7 @@ private:
             if (!fieldCount)
                 throw MissingField(line);
 
+            // Extracting the title of the entry adn cehcking if there are any duplicates
             string title;
             istringstream iss(line);
             getline(iss, title, '\"');
@@ -129,26 +150,33 @@ private:
             if (catalogList.count(title) > 0)
                 throw DuplicateEntry(line);
 
+            // Placing entry to the map
             catalogList[title] = T(line);
         }
         catch (DuplicateEntry e)
         {
-            ofstream output("output.txt", std::ios::app);
-            e.what(output);
-            output.close();
+            e.what();
         }
         catch (MissingField e)
         {
-            ofstream output("output.txt", std::ios::app);
-            e.what(output);
-            output.close();
+            e.what();
         }
     }
 
+    bool check_field(const string &field)
+    {
+        if (field != "title" && field != "year" && field != "authors" &&
+            field != "director" && field != "artists" && field != "starring" &&
+            field != "genre" && field != "tags")
+            return false;
+
+        else
+            return true;
+    }
     /**
      * @brief Implementing the commands read from file
      * @param line Reference to the line of command read from the file
-     * @exception Invalid field type
+     * @exception Invalid field types
      */
     void run_command(const string &line)
     {
@@ -175,6 +203,7 @@ private:
                         throw WrongCommand(line);
                 }
             }
+
             else if (command == "sort")
             {
                 // extracting the field that will be sorted
@@ -182,43 +211,47 @@ private:
                 getline(iss, field, '\"');
                 getline(iss, field, '\"');
 
-                sort_by_field(field);
+                bool check = check_field(field);
+                if (!check)
+                    throw WrongCommand(line);
 
-                for (const auto &item : catalogList)
-                    item.second.print_all();
+                sort_by_field(field);
             }
         }
 
         catch (WrongCommand e)
         {
-            ofstream output("output.txt", std::ios::app);
-            e.what(output);
-            output.close();
+            e.what();
         }
     }
 
+    /**
+     * @brief function to sort the map
+     * @param field string reference of the field to be sorted by
+     */
     void sort_by_field(const string &field)
     {
-        ofstream output("output.txt", std::ios::app);
-        output << "sort by \"" << field << "\"" << endl;
-        output.close();
-
+        // lambda function using field we got from the file
         auto compareFunc = [field](const T &item1, const T &item2)
         {
             return item1.get_compare_func(field)(item1, item2);
         };
 
-        // Iterate over the map and copy the values to the array
+        // Iterate over the map and copy the values to a temnporary storage
         std::vector<T> tempVec;
         for (const auto &pair : catalogList)
             tempVec.push_back(pair.second);
-        tempVec.erase(tempVec.begin());
 
+        // Srting the temporrary vector using out lamba function
         sort(tempVec.begin(), tempVec.end(), compareFunc);
 
-        catalogList.clear();
+        // Printing the command to the output file
+        ofstream output("output.txt", std::ios::app);
+        output << "sort by \"" << field << "\"" << endl;
+        output.close();
+
         for (const auto &item : tempVec)
-            catalogList[item.title] = item;
+            item.print_all();
     }
 };
 

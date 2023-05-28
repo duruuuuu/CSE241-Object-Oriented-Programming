@@ -1,18 +1,20 @@
 #ifndef _MUSIC_H_
 #define _MUSIC_H_
 
+#include "Exceptions.h"
 #include <string>
+#include <sstream>
+#include <vector>
+#include <iostream>
+#include <regex>
+#include <fstream>
 
-using std::string;
+using namespace std;
 
 class Music
 {
 public:
-    template <typename U>
-    friend class CatalogHandler;
-
     Music();
-    Music(string t, string a, string y, string g);
     Music(string line);
 
     // Getter functions
@@ -27,19 +29,32 @@ public:
     void set_year(string s);
     void set_genre(string s);
 
+    /**
+     * @brief Searches for a keyword in the list
+     * @param str keyword to be searched
+     * @param field field to search the keyword in
+     * @return true if the word is found, false if the field is not found
+     */
     bool search(string str, string field);
-    void sort(string field);
+
+    /**
+     * @brief finds the correct sorting function according tot he given field
+     * @param field reference to a string that indicates the field
+     * @return returns the corresponding function that sorts according to the given field
+     * @exception invalid command/field to be sorted
+     */
+    std::function<bool(const Music &, const Music &)> get_compare_func(const string &field) const;
+
+    /**
+     * @brief Prints all the information about the song
+     */
+    void print_all() const;
 
 private:
     string title;
     string artists;
     string year;
     string genre;
-
-    /**
-     * @brief Prints all the information about the song
-     */
-    void print_all() const;
 
     /**
      * @brief Looks for a substring in a string.
@@ -50,6 +65,23 @@ private:
      */
     template <typename Field>
     bool search_substr(string &str, Field field, string &fieldStr);
+
+    static bool compare_by_title(const Music &Music1, const Music &Music2)
+    {
+        return Music1.title < Music2.title;
+    }
+    static bool compare_by_artists(const Music &Music1, const Music &Music2)
+    {
+        return Music1.artists < Music2.artists;
+    }
+    static bool compare_by_year(const Music &Music1, const Music &Music2)
+    {
+        return stoi(Music1.year) < stoi(Music2.year);
+    }
+    static bool compare_by_genre(const Music &Music1, const Music &Music2)
+    {
+        return Music1.genre < Music2.genre;
+    }
 };
 
 #endif //_MUSIC_H_

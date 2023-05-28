@@ -13,7 +13,6 @@ Book::Book(string line)
 
     while (getline(iss, item, '\"'))
     {
-        // cout << "ITEM: " << item << endl;
         parsedItems.push_back(item);
     }
 
@@ -72,7 +71,6 @@ bool Book::search(string str, string field)
     else if (field == "tags")
         return search_substr(str, tags, field);
 
-    // TODO HANDLE WRONG COMMAND EXCEPTION
     else
         return false;
 }
@@ -91,7 +89,7 @@ std::function<bool(const Book &, const Book &)> Book::get_compare_func(const str
     else if (field == "tags")
         return &compare_by_tags;
 
-    // Default comaprison function if field is not recognized
+    // Exception is handled outside of the dunctoin, this else statement is used only to satisfy the return of the function
     else
         return &compare_by_title;
-}
+};

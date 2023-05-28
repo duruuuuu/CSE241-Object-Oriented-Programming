@@ -4,11 +4,6 @@ Music::Music()
 {
     // Intentionally left blank
 }
-Music::Music(string t, string a, string y, string g)
-    : title(t), artists(a), year(y), genre(g)
-{
-    // Intentionally left blank
-}
 
 Music::Music(string line)
 {
@@ -46,11 +41,11 @@ void Music::print_all() const
     std::ofstream output("output.txt", std::ios::app);
     if (output.is_open())
     {
-        cout << "\"" << title << "\" "
-             << "\"" << artists << "\" "
-             << "\"" << year << "\" "
-             << "\"" << genre << "\""
-             << endl;
+        output << "\"" << title << "\" "
+               << "\"" << artists << "\" "
+               << "\"" << year << "\" "
+               << "\"" << genre << "\""
+               << endl;
         output.close();
     }
 }
@@ -58,10 +53,10 @@ void Music::print_all() const
 template <typename Field>
 bool Music::search_substr(string &str, Field field, string &fieldStr)
 {
-
-    regex pattern(str);
+    regex pattern(str); // regular expression pattern
     bool match = regex_search(field, pattern);
 
+    // Printing entry that is matched with the search keyword
     if (match)
     {
         std::ofstream output("output.txt", std::ios::app);
@@ -89,7 +84,6 @@ bool Music::search(string str, string field)
     else if (field == "genre")
         return search_substr(str, genre, field);
 
-    // TODO HANDLE WRONG COMMAND EXCEPTION
     else
         return false;
 }
@@ -108,7 +102,7 @@ std::function<bool(const Music &, const Music &)> Music::get_compare_func(const 
     else if (field == "genre")
         return &compare_by_genre;
 
-    // Default comaprison function if field is not recognized
+    // Exception is handled outside of the dunctoin, this else statement is used only to satisfy the return of the function
     else
         return &compare_by_title;
 }

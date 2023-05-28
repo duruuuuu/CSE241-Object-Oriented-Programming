@@ -14,43 +14,47 @@ using namespace std;
 class Book
 {
 public:
-    template <typename U>
-    friend class CatalogHandler;
-
     Book();
     Book(string line); // Constructor that takes a line of data and parses it to create an entry
 
     // Getter functions
-    string get_title() const;
-    string get_year() const;
-    string get_authors() const;
-    string get_tags() const;
+    string get_title() const { return title; }
+    string get_year() const { return year; }
+    string get_authors() const { return authors; }
+    string get_tags() const { return tags; }
 
     // Setter functions
-    void set_title(string s);
-    void set_year(string s);
-    void set_authors(string s);
-    void set_tags(string s);
+    void set_title(string s) { title = s; }
+    void set_year(string s) { year = s; }
+    void set_authors(string s) { authors = s; }
+    void set_tags(string s) { tags = s; }
 
     /**
-     * @brief Search fundtion to look for a keyword in a specific field
+     * @brief Search function to look for a keyword in a specific field
      * @param str the keyword being searched
      * @param field the field that the keyword is being searched in
+     * @return true if the word is found, false if the field is invalid
      */
     bool search(string str, string field);
 
+    /**
+     * @brief finds the correct sorting function according tot he given field
+     * @param field reference to a string that indicates the field
+     * @return returns the corresponding function that sorts according to the given field
+     * @exception invalid command/field to be sorted
+     */
     std::function<bool(const Book &, const Book &)> get_compare_func(const string &field) const;
+
+    /**
+     * @brief Prints all the information about the book
+     */
+    void print_all() const;
 
 private:
     string title;
     string authors;
     string year;
     string tags;
-
-    /**
-     * @brief Prints all the information about the book
-     */
-    void print_all() const;
 
     /**
      * @brief Looks for a substring in a string.
@@ -62,21 +66,23 @@ private:
     template <typename Field>
     bool search_substr(string &str, Field field, string &fieldStr);
 
+    /* COMPARATOR FUNCTIONS */
+
     static bool compare_by_title(const Book &Book1, const Book &Book2)
     {
-        return Book1.title > Book2.title;
+        return Book1.title < Book2.title;
     }
     static bool compare_by_author(const Book &Book1, const Book &Book2)
     {
-        return Book1.authors > Book2.authors;
+        return Book1.authors < Book2.authors;
     }
     static bool compare_by_year(const Book &Book1, const Book &Book2)
     {
-        return Book1.year > Book2.year;
+        return stoi(Book1.year) < stoi(Book2.year);
     }
     static bool compare_by_tags(const Book &Book1, const Book &Book2)
     {
-        return Book1.tags > Book2.tags;
+        return Book1.tags < Book2.tags;
     }
 };
 
