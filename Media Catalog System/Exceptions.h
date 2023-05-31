@@ -17,55 +17,98 @@ public:
 /**
  * @class MissingField
  * @brief If there is a field missingin the entry
- * @param s invalid line/entry
+ * @param s line of invalid entry
  */
 class MissingField : public Exception
 {
 public:
-    MissingField(string s) : line(s) {}
+    MissingField(string s) : entry(s) {}
 
     /**
      * @brief Prints error message and invalid entry to file
      * @param out Reference to the files output stream
      */
-    void what(std::ofstream &out) const
+    void what() const
     {
+        std::ofstream out("output.txt", std::ios::app);
         out << "Exception: missing field" << std::endl;
-        out << line << std::endl;
+        out << entry << std::endl;
+        out.close();
     }
 
 private:
-    string line;
+    string entry;
 };
 
 /**
  * @class DuplicateEntry
  * @brief If the entry already exists in the system
- * @param s invalid line/entry
+ * @param s line of invalid entry
  */
 class DuplicateEntry : public Exception
 {
 public:
-    DuplicateEntry(string s) : line(s) {}
+    DuplicateEntry(string s) : entry(s) {}
 
     /**
      * @brief Prints error message and invalid entry to file
      * @param out Reference to the files output stream
      */
-    void what(std::ofstream &out) const
+    void what() const
     {
+        std::ofstream out("output.txt", std::ios::app);
+
         out << "Exception: duplicate entry" << std::endl;
-        out << line << std::endl;
+        out << entry << std::endl;
+        out.close();
     }
 
 private:
-    string line;
+    string entry;
 };
 
+/**
+ * @class WrongCommand
+ * @brief If the command given is invalid
+ * @param s line of invalid entry
+ */
 class WrongCommand : public Exception
 {
 public:
-    string what() const { return "command is wrong"; }
+    WrongCommand(string s) : entry(s) {}
+    WrongCommand() {}
+
+    /**
+     * @brief Prints error message and invalid entry to file
+     */
+    void what() const
+    {
+        std::ofstream out("output.txt", std::ios::app);
+        out << "Exception: command is wrong" << std::endl;
+        out << entry << std::endl;
+        out.close();
+    }
+
+    void what(const string &field) const
+    {
+        std::ofstream out("output.txt", std::ios::app);
+        out << "Exception: command is wrong" << std::endl;
+        out << "sort \"" << field << "\"" << std::endl;
+        out.close();
+    }
+
+private:
+    string entry;
+};
+
+/**
+ * @class FileFail
+ * @brief file could not be opened successfully
+ */
+class FileFail : public Exception
+{
+public:
+    void what() { return; }
 };
 
 #endif //_EXCEPTIONS_H_
