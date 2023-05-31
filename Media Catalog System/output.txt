@@ -1,0 +1,13 @@
+Catalog read: music
+4 unique entries
+sort by "genre"
+"Professor Satchafunkilus and the Musterion of Rock" "Joe Satriani" "2008" "Guitar Virtuoso"
+"Witchdoctor's Son" "Okay Temiz, Johnny Dyani" "2017" "Jazz, Fusion"
+"Physical Graffiti" "Led Zeppelin" "1975" "Rock"
+"Return Of The Mother Head's Family Reunion" "Ritchie Kotzen" "2007" "Rock, Guitar Virtuoso"
+search "Witch" in "title"
+"Witchdoctor's Son" "Okay Temiz, Johnny Dyani" "2017" "Jazz, Fusion"
+search "the" in "title"
+"Return Of The Mother Head's Family Reunion" "Ritchie Kotzen" "2007" "Rock, Guitar Virtuoso"
+search "the" in "title"
+"Professor Satchafunkilus and the Musterion of Rock" "Joe Satriani" "2008" "Guitar Virtuoso"

@@ -1,7 +1,5 @@
-movie
-"The Lord of the Rings: The Fellowship of the Ring" "Peter Jackson" "2001" "Adventure, Drama,Fantasy" "Elijah Wood, Ian McKellen, Orlando Bloom"
-"Twelve Monkeys" "Terry Gilliam" "1995" "Mystery, Sci-Fi, Thriller" " Bruce Willis, MadeleineStowe, Brad Pitt"
-"Twelve Monkeys" "" "" "Sci-Fi, Thriller" " Bruce Willis, Madeleine Stowe, Brad Pitt"
-"Perfume: The Story of a Murderer" " Tom Tykwer" "2006" "Crime, Drama, Fantasy" "Ben Whishaw,Dustin Hoffman, Alan Rickman"
-"Twelve Monkeys" "" "" "Mystery, Sci-Fi, Thriller" " Bruce Willis, Madeleine Stowe, Brad Pitt"
-"Cold Mountain" "Anthony Minghella" "2003" "Adventure, Drama, History"
+music
+"Professor Satchafunkilus and the Musterion of Rock" "Joe Satriani" "2008" "Guitar Virtuoso"
+"Physical Graffiti" "Led Zeppelin" "1975" "Rock"
+"Witchdoctor's Son" "Okay Temiz, Johnny Dyani" "2017" "Jazz, Fusion"
+"Return Of The Mother Head's Family Reunion" "Ritchie Kotzen" "2007" "Rock, Guitar Virtuoso"
