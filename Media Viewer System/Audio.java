@@ -12,9 +12,18 @@ public class Audio extends MediaEntry implements NonVisual, Playable {
     System.out.println(name + " created succesfully");
   }
 
+  public Audio() {
+    //intentionally left empty
+  }
+
   @Override
   public double get_duration() {
     return duration;
+  }
+
+  @Override
+  public void set_duration(double s) {
+    duration = s;
   }
 
   @Override

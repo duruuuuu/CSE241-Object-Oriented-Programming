@@ -11,9 +11,18 @@ public class Video extends MediaEntry implements Playable, Visual {
     System.out.println(name + " created succesfully");
   }
 
+  public Video() {
+    //Intentionally left empty
+  }
+
   @Override
   public double get_duration() {
     return duration;
+  }
+
+  @Override
+  public void set_duration(double s) {
+    duration = s;
   }
 
   @Override

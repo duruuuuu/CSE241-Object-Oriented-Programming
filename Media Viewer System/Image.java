@@ -18,11 +18,19 @@ public class Image extends MediaEntry implements Visual, NonPlayable {
     System.out.println(name + " created succesfully");
   }
 
+  public Image() {
+    //Intentionally left empty
+  }
+
   /**
    * @return Returns the dimension of the image
    */
   public int get_dimension() {
     return dimension;
+  }
+
+  public void set_dimension(int d) {
+    dimension = d;
   }
 
   @Override

@@ -30,4 +30,20 @@ public class MediaEntry {
   public double get_size() {
     return size;
   }
+
+  /**
+   * Default Constructor
+   */
+  public MediaEntry() {
+    //Intentionally left empty
+  }
+
+  /* Mutator functions:  */
+  public void set_name(String s) {
+    name = s;
+  }
+
+  public void set_size(double s) {
+    size = s;
+  }
 }

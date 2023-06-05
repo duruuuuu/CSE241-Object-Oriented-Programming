@@ -19,6 +19,15 @@ public interface Observer {
   public void remove_message(ArrayList<MediaEntry> ogEntries);
 
   /**
+   * {@summary} sends a message that an observer has been deregistered from a set and
+   *            refreshes(clears) its playing/viewing list
+   * ***When an observer is deregistered from a set, it no longer recieves updates or list of items
+   *    therefore the lsit of items is also cleared form its list
+   * @param obs Observer object
+   */
+  public void deregister_message();
+
+  /**
    * {@summary} Prints the entries in the observers list
    */
   public void show_list();

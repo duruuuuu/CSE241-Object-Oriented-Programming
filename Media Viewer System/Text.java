@@ -10,6 +10,10 @@ public class Text extends MediaEntry implements NonPlayable, NonVisual {
     System.out.println(name + " created succesfully");
   }
 
+  public Text() {
+    //intentionally left empty
+  }
+
   @Override
   public double get_size() {
     return size;

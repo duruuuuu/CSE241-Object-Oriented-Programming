@@ -18,10 +18,6 @@ public class Test {
     ds.register(v1);
     ds.register(v2);
 
-    /* REMOVING OBSERVER FROM DATA SET */
-    //ds.deregister(p1);
-    //p1 no longer recieves any update or list of items
-
     /* CREATING DIFFERENT OBJECTS */
     ds.add(new Image("image1", 1, 9.9));
     ds.add(new Image("image2", 7, 19.9));
@@ -60,6 +56,12 @@ public class Test {
     System.out.println("Observer p1 Removed from the dataset");
     System.out.println("\nPlayer Observer List:\np2");
 
+    //Showing that the removed observer does not change
+    System.out.println(
+      "\n(p1.show_list) *p1 deregistered from the dataset so it NO LONGER RECIEVES ANY LIST OF ITEMS or updates"
+    );
+    p1.show_list();
+
     //Remove current entry from the dataset. All interested observers will get this update
     ds.remove(p0);
     System.out.println("\naudio1 Removed from the dataset.");
@@ -68,12 +70,6 @@ public class Test {
     p0 = p2.currently_playing();
     System.out.println("\nNew Currently Playing:");
     p0.info();
-
-    //Showing that the removed observer does not change
-    System.out.println(
-      "\n(p1.show_list) *p1 deregistered from the dataset so it does not get notified of any changes"
-    );
-    p1.show_list();
 
     //Printing the modified playing list
     System.out.println("\n(p2.show_list)");
@@ -213,7 +209,7 @@ public class Test {
     v2.show_list();
 
     //displaying second observer list
-    System.out.println("\n(doViewer.show_list)");
+    System.out.println("\n(docViewer.show_list)");
     docViewer.show_list();
 
     //Displaying the new currently viewing item

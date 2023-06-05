@@ -35,6 +35,12 @@ public class Player implements Observer {
   }
 
   @Override
+  public void deregister_message() {
+    playList.clear();
+    currentIndex = 0;
+  }
+
+  @Override
   public void show_list() {
     System.out.println("PLAYLIST:");
     for (MediaEntry entry : playList) System.out.println(entry.get_name());
@@ -51,29 +57,19 @@ public class Player implements Observer {
     int endIndex = playList.size();
 
     if (type.equals("audio")) currentIndex =
-      find_next_index(
-        startIndex,
-        endIndex,
-        Playable.class,
-        NonVisual.class
-      ); else if (type.equals("video")) currentIndex =
-      find_next_index(startIndex, endIndex, Playable.class, Visual.class);
+      find_next_index(startIndex, endIndex, Audio.class); else if (
+      type.equals("video")
+    ) currentIndex = find_next_index(startIndex, endIndex, Video.class);
   }
 
   /**
    * {@summary} Finds the next media entry of the same type as given in the parameter
    * @param startI Starting index
    * @param endI Ending index
-   * @param playable Playable interface
-   * @param type Visual/Non-Visual interface
+   * @param type Type of data entry
    * @return array index of the next media entry
    */
-  private int find_next_index(
-    int startI,
-    int endI,
-    Class<?> playable,
-    Class<?> type
-  ) {
+  private int find_next_index(int startI, int endI, Class<?> type) {
     int size = playList.size();
     for (int i = startI;; i++) {
       if (i >= endI) {
@@ -81,9 +77,7 @@ public class Player implements Observer {
         i = i % size;
         continue;
       }
-      if (
-        playable.isInstance(playList.get(i)) && type.isInstance(playList.get(i))
-      ) {
+      if (type.isInstance(playList.get(i))) {
         return i;
       }
     }
@@ -100,16 +94,9 @@ public class Player implements Observer {
     int endIndex = -1;
 
     if (type.equals("audio")) {
-      currentIndex =
-        findPreviousIndex(
-          startIndex,
-          endIndex,
-          Playable.class,
-          NonVisual.class
-        );
+      currentIndex = findPreviousIndex(startIndex, endIndex, Audio.class);
     } else if (type.equals("video")) {
-      currentIndex =
-        findPreviousIndex(startIndex, endIndex, Playable.class, Visual.class);
+      currentIndex = findPreviousIndex(startIndex, endIndex, Video.class);
     }
   }
 
@@ -117,16 +104,10 @@ public class Player implements Observer {
    * {@summary} Finds the previous media entry of the same type as given in the parameter
    * @param startI Starting index
    * @param endI Ending index
-   * @param playable Playable interface
-   * @param type Visual/Non-Visual interface
+   * @param type Type of data entry
    * @return array index of the previous media entry
    */
-  private int findPreviousIndex(
-    int startIndex,
-    int endIndex,
-    Class<?> playable,
-    Class<?> type
-  ) {
+  private int findPreviousIndex(int startIndex, int endIndex, Class<?> type) {
     int size = playList.size();
     int i = startIndex;
     do {
@@ -135,9 +116,7 @@ public class Player implements Observer {
         i = size - 1;
         continue;
       }
-      if (
-        playable.isInstance(playList.get(i)) && type.isInstance(playList.get(i))
-      ) {
+      if (type.isInstance(playList.get(i))) {
         return i;
       }
       i--;

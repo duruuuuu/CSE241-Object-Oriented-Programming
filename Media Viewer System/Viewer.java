@@ -35,6 +35,12 @@ public class Viewer implements Observer {
   }
 
   @Override
+  public void deregister_message() {
+    viewList.clear();
+    currentIndex = 0;
+  }
+
+  @Override
   public void show_list() {
     System.out.println("VIEWING LIST:");
     for (MediaEntry entry : viewList) System.out.println(entry.get_name());
@@ -50,29 +56,19 @@ public class Viewer implements Observer {
     int endIndex = viewList.size();
 
     if (type.equals("text")) currentIndex =
-      find_next_index(
-        startIndex,
-        endIndex,
-        NonPlayable.class,
-        Text.class
-      ); else if (type.equals("image")) currentIndex =
-      find_next_index(startIndex, endIndex, NonPlayable.class, Image.class);
+      find_next_index(startIndex, endIndex, Text.class); else if (
+      type.equals("image")
+    ) currentIndex = find_next_index(startIndex, endIndex, Image.class);
   }
 
   /**
    * {@summary} Finds the next media entry of the same type as given in the parameter
    * @param startI Starting index
    * @param endI Ending index
-   * @param visual Visual interface
-   * @param type Visual/Non-Visual interface
+   * @param type Type of the entry
    * @return array index of the next media entry
    */
-  private int find_next_index(
-    int startI,
-    int endI,
-    Class<?> nonPlay,
-    Class<?> type
-  ) {
+  private int find_next_index(int startI, int endI, Class<?> type) {
     int size = viewList.size();
     for (int i = startI;; i++) {
       if (i >= endI) {
@@ -80,9 +76,7 @@ public class Viewer implements Observer {
         i = i % size;
         continue;
       }
-      if (
-        nonPlay.isInstance(viewList.get(i)) && type.isInstance(viewList.get(i))
-      ) {
+      if (type.isInstance(viewList.get(i))) {
         return i;
       }
     }
@@ -102,11 +96,9 @@ public class Viewer implements Observer {
     }
 
     if (type.equals("image")) {
-      currentIndex =
-        findPreviousIndex(startIndex, endIndex, NonPlayable.class, Image.class);
+      currentIndex = findPreviousIndex(startIndex, endIndex, Image.class);
     } else if (type.equals("text")) {
-      currentIndex =
-        findPreviousIndex(startIndex, endIndex, NonPlayable.class, Text.class);
+      currentIndex = findPreviousIndex(startIndex, endIndex, Text.class);
     }
   }
 
@@ -114,16 +106,10 @@ public class Viewer implements Observer {
    * {@summary} Finds the previous media entry of the same type as given in the parameter
    * @param startI Starting index
    * @param endI Ending index
-   * @param visual Visual interface
-   * @param type Visual/Non-Visual interface
+   * @param type Type of the entry
    * @return array index of the previous media entry
    */
-  private int findPreviousIndex(
-    int startIndex,
-    int endIndex,
-    Class<?> nonPlayClass,
-    Class<?> type
-  ) {
+  private int findPreviousIndex(int startIndex, int endIndex, Class<?> type) {
     int size = viewList.size();
     int i = startIndex;
     do {
@@ -132,10 +118,7 @@ public class Viewer implements Observer {
         i = size - 1;
         continue;
       }
-      if (
-        nonPlayClass.isInstance(viewList.get(i)) &&
-        type.isInstance(viewList.get(i))
-      ) {
+      if (type.isInstance(viewList.get(i))) {
         return i;
       }
       i--;

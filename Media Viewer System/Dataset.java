@@ -21,9 +21,14 @@ public class Dataset {
 
   /**
    * {@summary} Removing an instance of an  Observer from the dataset
+   * Deregistering an observer from a set completely removes the observer from the set
+   * and vice versa.
+   * A deregistered observer no longer recieves any data and its list is also cleared
+   * as it also does not recieve a list of items
    * @param toAdd observer object that will be removed from the datase
    */
   public void deregister(Observer toRemove) {
+    toRemove.deregister_message();
     observerList.remove(toRemove);
   }
 
@@ -44,7 +49,7 @@ public class Dataset {
 
   /**
    * Function removes a Playable entry from the dataset and notifies all Players
-   * @param toRemove Item to be removed
+   * @param toRemove Playable object that holds the item to be removed
    */
   public void remove(Playable toRemove) {
     entryList.remove((MediaEntry) toRemove);
@@ -53,7 +58,7 @@ public class Dataset {
 
   /**
    * Function removes a Non-Playable entry from the set and all Viewing lists
-   * @param toRemove Item to be removed
+   * @param toRemove NonPlayable instance that holds the item to be removed
    */
   public void remove(NonPlayable toRemove) {
     entryList.remove((MediaEntry) toRemove);
