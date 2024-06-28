@@ -1,7 +1,7 @@
 2023 Spring Semester CSE241 OOP at Gebze Technical University
 
 
-
+| **Assignment** | **Final Grade** |
 | ------------- | ------------- |
 | HW1  | 100  |
 | HW2  | 100  |
