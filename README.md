@@ -1,7 +1,10 @@
 2023 Spring Semester CSE241 OOP at Gebze Technical University
 
 
-| --- | --- |
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
 |HW1  | 100  |
 | HW2  | 100  |
 | HW3 | 80 |
